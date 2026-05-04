@@ -1,0 +1,39 @@
+---
+import VersionSelector from "./VersionSelector.astro";
+const { version } = Astro.props;
+
+const res = await fetch(`https://logosapi.onrender.com/info/${version}/books`);
+const data = await res.json();
+const books = data.books || [];
+---
+
+<div
+	id="nav-overlay"
+	class="fixed inset-0 bg-white dark:bg-darkBg z-[100] hidden overflow-y-auto"
+>
+	<div class="max-w-md mx-auto px-6 py-8">
+		<div class="flex justify-between items-center mb-6">
+			<h2 class="text-2xl font-bold font-sans">Navegación</h2>
+			<button id="close-nav" class="p-2 text-2xl">✕</button>
+		</div>
+
+		<!-- Selector de Versiones primero -->
+		<VersionSelector />
+
+		<label class="text-xs font-bold uppercase opacity-50 mb-2 block">Libros</label
+		>
+		<nav class="flex flex-col space-y-1">
+			{
+				books.map((book: string) => (
+					<a
+						href={`/?version=${version}&book=${book.toLowerCase()}&chapter=1`}
+						class="py-4 px-2 text-xl border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors font-serif"
+					>
+						{book}
+					</a>
+				))
+			}
+		</nav>
+	</div>
+</div>
+<!-- ... el script se mantiene igual ... -->

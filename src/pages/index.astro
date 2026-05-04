@@ -1,17 +1,139 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import BibleSelector from "../components/BibleSelector.astro";
 
+const url = new URL(Astro.request.url);
+// Aseguramos que los valores sean minúsculas para la API
+const version = (url.searchParams.get("version") || "rv1960").toLowerCase();
+const book = (url.searchParams.get("book") || "genesis").toLowerCase();
+const chapter = url.searchParams.get("chapter") || "1";
+
+let verses = [];
+let errorMsg = "";
+
+try {
+	const apiUrl = `https://logosapi.onrender.com/read/${version}/${book}/${chapter}`;
+	console.log("Pidiendo texto a:", apiUrl);
+
+	const response = await fetch(apiUrl);
+
+	if (!response.ok) {
+		errorMsg = `Error ${response.status}: No se encontró el contenido.`;
+	} else {
+		const data = await response.json();
+
+		// REVISIÓN DE ESTRUCTURA:
+		// Tu API puede devolver los versículos en 'results', 'verses' o directo en la raíz
+		verses = data.results || data.verses || (Array.isArray(data) ? data : []);
+
+		if (verses.length === 0) {
+			console.log("JSON recibido pero vacío:", data);
+		}
+	}
+} catch (e) {
+	errorMsg = "Error de conexión. Revisa si la API en Render está activa.";
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title={`LogosApp | ${book} ${chapter}`}>
+	<!-- Overlay del Selector -->
+	<div
+		id="selector-overlay"
+		class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex items-end justify-center transition-all"
+	>
+		<div class="w-full max-w-screen-md animate-slide-up">
+			<BibleSelector
+				currentVersion={version}
+				currentBook={book}
+				currentChapter={chapter}
+			/>
+		</div>
+	</div>
+
+	<!-- Header -->
+	<header
+		class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
+	>
+		<div
+			class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between"
+		>
+			<button id="open-selector" class="flex flex-col text-left group">
+				<h1
+					class="text-xs font-bold tracking-widest uppercase opacity-60 group-hover:text-blue-500 transition-colors"
+				>
+					{book}
+					<span class="text-[8px]">▼</span>
+				</h1>
+				<p class="text-lg font-serif italic uppercase leading-none">
+					Capítulo {chapter}
+				</p>
+			</button>
+		</div>
+	</header>
+
+	<!-- Contenido Principal -->
+	<main class="max-w-screen-md mx-auto px-6 py-10 pb-32">
+		{
+			errorMsg && (
+				<div class="p-4 mb-6 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-center">
+					{errorMsg}
+				</div>
+			)
+		}
+
+		<article class="bible-text text-xl md:text-2xl space-y-6 font-serif leading-relaxed text-gray-200">
+      {verses.length > 0
+        ? verses.map((v: any) => (
+            <p class="relative pl-7"> <!-- Reducido el padding lateral de 8 a 7 -->
+              <span class="absolute left-0 top-1 text-base font-bold text-blue-300 opacity-80 italic">
+                {v.verse}
+              </span>
+              {v.text}
+            </p>
+          ))
+        : !errorMsg && (
+            <p class="text-center py-20 opacity-40 italic">
+              Buscando en las escrituras...
+            </p>
+          )
+      }
+    </article>
+	</main>
+
+	<style>
+		.animate-slide-up {
+			animation: slideUp 0.3s cubic-bezier(0, 0.55, 0.45, 1);
+		}
+		@keyframes slideUp {
+			from {
+				transform: translateY(100%);
+			}
+			to {
+				transform: translateY(0);
+			}
+		}
+	</style>
+
+	<script>
+		// Lógica simplificada: Solo apertura del selector
+		const openBtn = document.getElementById("open-selector");
+		const overlay = document.getElementById("selector-overlay");
+
+		const initApp = () => {
+			openBtn?.addEventListener("click", () => {
+				overlay?.classList.remove("hidden");
+			});
+
+			// Cerrar al hacer clic fuera del contenido del selector
+			overlay?.addEventListener("click", (e) => {
+				if (e.target === overlay) {
+					overlay.classList.add("hidden");
+				}
+			});
+		};
+
+		initApp();
+		// Soporte para navegación de Astro
+		document.addEventListener("astro:after-swap", initApp);
+	</script>
+</Layout>

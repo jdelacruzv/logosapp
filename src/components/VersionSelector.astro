@@ -1,0 +1,54 @@
+---
+let versions = [];
+try {
+	const res = await fetch("https://logosapi.onrender.com/info/versions");
+	versions = await res.json();
+} catch (e) {
+	console.error("Error cargando versiones:", e);
+}
+---
+
+<div class="mb-8">
+	<label
+		class="text-xs font-bold uppercase opacity-50 mb-2 block tracking-widest"
+	>
+		Versión de la Biblia
+	</label>
+	<div class="relative">
+		<select
+			id="version-select"
+			class="w-full bg-gray-100 dark:bg-gray-800 p-4 rounded-xl font-sans text-lg appearance-none outline-none border-2 border-transparent focus:border-blue-500 transition-all cursor-pointer"
+		>
+			{
+				versions.map((v: string) => (
+					<option value={v.toLowerCase()}>{v.toUpperCase()}</option>
+				))
+			}
+		</select>
+		<!-- Icono de flecha personalizado -->
+		<div
+			class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50"
+		>
+			▼
+		</div>
+	</div>
+</div>
+
+<script>
+	const select = document.getElementById("version-select") as HTMLSelectElement;
+
+	select?.addEventListener("change", (e) => {
+		const target = e.target as HTMLSelectElement;
+		const url = new URL(window.location.href);
+		url.searchParams.set("version", target.value);
+		// Resetear libro y capítulo al cambiar versión para evitar errores entre idiomas
+		url.searchParams.set("book", "genesis");
+		url.searchParams.set("chapter", "1");
+		window.location.href = url.toString();
+	});
+
+	// Sincronizar el select con la URL actual
+	const params = new URLSearchParams(window.location.search);
+	const currentVersion = params.get("version") || "rv1960";
+	if (select) select.value = currentVersion;
+</script>
