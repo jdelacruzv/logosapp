@@ -6,7 +6,17 @@ const url = new URL(Astro.request.url);
 // Aseguramos que los valores sean minúsculas para la API
 const version = (url.searchParams.get("version") || "rv1960").toLowerCase();
 const book = (url.searchParams.get("book") || "genesis").toLowerCase();
-const chapter = url.searchParams.get("chapter") || "1";
+
+// Forzamos la conversión a número y usamos un fallback de 1
+const chapterParam = url.searchParams.get("chapter") || "1";
+const chapter = parseInt(chapterParam, 10) || 1; 
+
+// Ahora chapter es de tipo 'number', y las operaciones funcionarán:
+const prevChapter = chapter > 1 ? chapter - 1 : null;
+const nextChapter = chapter + 1;
+
+// Función para capitalizar el nombre del libro (ej: "genesis" -> "Génesis")
+const displayBook = book.charAt(0).toUpperCase() + book.slice(1);
 
 let verses = [];
 let errorMsg = "";
@@ -72,7 +82,7 @@ try {
 	</header>
 
 	<!-- Contenido Principal -->
-	<main class="max-w-screen-md mx-auto px-6 py-10 pb-32">
+	<main class="max-w-screen-md mx-auto px-6 py-10">
 		{
 			errorMsg && (
 				<div class="p-4 mb-6 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-center">
@@ -98,6 +108,39 @@ try {
           )
       }
     </article>
+
+		<!-- Paginación integrada al final del texto -->
+		<nav class="mt-8 pt-6 border-t border-white/10">
+      <div class="flex flex-row justify-between items-center gap-2">
+        
+        {prevChapter ? (
+          <a 
+            href={`/?version=${version}&book=${book}&chapter=${prevChapter}`}
+            class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-5 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
+          >
+            <span class="text-blue-400 font-bold text-xs leading-none group-hover:-translate-x-0.5 transition-transform">
+              ←
+            </span>
+            <span class="opacity-70 group-hover:opacity-100 leading-none">
+              Capítulo {prevChapter}
+            </span>
+          </a>
+        ) : <div />}
+
+        <a 
+          href={`/?version=${version}&book=${book}&chapter=${nextChapter}`}
+          class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-6 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
+        >
+          <span class="opacity-70 group-hover:opacity-100 leading-none">
+            Capítulo {nextChapter}
+          </span>
+          <span class="text-blue-400 font-bold text-xs leading-none group-hover:translate-x-0.5 transition-transform">
+            →
+          </span>
+        </a>
+        
+      </div>
+    </nav>
 	</main>
 
 	<style>
