@@ -61,7 +61,7 @@ try {
 	</div>
 
 	<!-- Header -->
-	<header
+	<!-- <header
 		class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
 	>
 		<div
@@ -79,10 +79,38 @@ try {
 				</p>
 			</button>
 		</div>
-	</header>
+	</header> -->
+
+	<header
+    class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
+  >
+    <div class="max-w-screen-md mx-auto px-4 h-16 flex items-center">
+      <button id="open-selector" class="flex items-center group gap-2 sm:gap-3 text-left">
+        <span class="text-[12px] sm:text-xs font-bold tracking-widest text-blue-400 uppercase">
+          {version}
+        </span>
+        
+        <span class="text-gray-600 font-light">|</span>
+
+        <span class="text-[12px] sm:text-xs font-bold tracking-widest text-white/60 uppercase group-hover:text-white transition-colors">
+          {book}
+        </span>
+
+        <span class="text-gray-600 font-light">|</span>
+
+        <span class="text-[12px] sm:text-xs font-bold tracking-widest text-white/60 uppercase">
+          Capítulo {chapter}
+        </span>
+
+        <span class="text-[8px] text-blue-400 opacity-50 group-hover:opacity-100 transition-opacity ml-1">
+          ▼
+        </span>
+      </button>
+    </div>
+  </header>
 
 	<!-- Contenido Principal -->
-	<main class="max-w-screen-md mx-auto px-6 py-10">
+	<main class="max-w-screen-md mx-auto px-3 md:px-6 py-10">
 		{
 			errorMsg && (
 				<div class="p-4 mb-6 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-center">
