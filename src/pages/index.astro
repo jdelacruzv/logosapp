@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import BibleSelector from "../components/BibleSelector.astro";
+import SearchModal from "../components/SearchModal.astro";
 
 const url = new URL(Astro.request.url);
 // Aseguramos que los valores sean minúsculas para la API
@@ -9,7 +10,7 @@ const book = (url.searchParams.get("book") || "genesis").toLowerCase();
 
 // Forzamos la conversión a número y usamos un fallback de 1
 const chapterParam = url.searchParams.get("chapter") || "1";
-const chapter = parseInt(chapterParam, 10) || 1; 
+const chapter = parseInt(chapterParam, 10) || 1;
 
 // Ahora chapter es de tipo 'number', y las operaciones funcionarán:
 const prevChapter = chapter > 1 ? chapter - 1 : null;
@@ -62,26 +63,6 @@ try {
 
 	<!-- Header -->
 	<!-- <header
-		class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
-	>
-		<div
-			class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between"
-		>
-			<button id="open-selector" class="flex flex-col text-left group">
-				<h1
-					class="text-xs font-bold tracking-widest uppercase opacity-60 group-hover:text-blue-500 transition-colors"
-				>
-					{book}
-					<span class="text-[8px]">▼</span>
-				</h1>
-				<p class="text-lg font-serif italic uppercase leading-none">
-					Capítulo {chapter}
-				</p>
-			</button>
-		</div>
-	</header> -->
-
-	<header
     class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
   >
     <div class="max-w-screen-md mx-auto px-4 h-16 flex items-center">
@@ -106,8 +87,71 @@ try {
           ▼
         </span>
       </button>
+
+			<div class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">		
+  			<button id="trigger-search" class="p-2 hover:bg-white/5 rounded-full transition-colors">
+  			  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  			    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  			  </svg>
+  			</button>
+			</div>
     </div>
-  </header>
+  </header> -->
+	<header
+		class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
+	>
+		<div
+			class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between"
+		>
+			<button
+				id="open-selector"
+				class="flex items-center group gap-2 sm:gap-3 text-left cursor-pointer"
+			>
+				<span
+					class="text-[10px] sm:text-xs font-bold tracking-widest text-blue-400 uppercase leading-none"
+				>
+					{version}
+				</span>
+				<span class="text-gray-600 font-light leading-none">|</span>
+				<span
+					class="text-[10px] sm:text-xs font-bold tracking-widest text-white/60 uppercase group-hover:text-white transition-colors leading-none"
+				>
+					{book}
+				</span>
+				<span class="text-gray-600 font-light leading-none">|</span>
+				<span
+					class="text-[10px] sm:text-xs font-bold tracking-widest text-white/60 uppercase leading-none"
+				>
+					Capítulo {chapter}
+				</span>
+				<span
+					class="text-[8px] text-blue-400 opacity-50 group-hover:opacity-100 transition-opacity ml-1"
+				>
+					▼
+				</span>
+			</button>
+
+			<button
+				id="trigger-search"
+				class="p-2 hover:bg-white/5 rounded-full transition-all cursor-pointer flex items-center justify-center"
+				aria-label="Buscar"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-5 w-5 text-gray-400 hover:text-blue-400 transition-colors"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+				</svg>
+			</button>
+		</div>
+	</header>
 
 	<!-- Contenido Principal -->
 	<main class="max-w-screen-md mx-auto px-3 md:px-6 py-10">
@@ -119,56 +163,62 @@ try {
 			)
 		}
 
-		<article class="bible-text text-xl md:text-2xl space-y-6 font-serif leading-relaxed text-gray-200">
-      {verses.length > 0
-        ? verses.map((v: any) => (
-            <p class="relative pl-7"> <!-- Reducido el padding lateral de 8 a 7 -->
-              <span class="absolute left-0 top-1 text-base font-bold text-blue-300 opacity-80 italic">
-                {v.verse}
-              </span>
-              {v.text}
-            </p>
-          ))
-        : !errorMsg && (
-            <p class="text-center py-20 opacity-40 italic">
-              Buscando en las escrituras...
-            </p>
-          )
-      }
-    </article>
+		<article
+			class="bible-text text-xl md:text-2xl space-y-6 font-serif leading-relaxed text-gray-200"
+		>
+			{
+				verses.map((v: any) => (
+					<p
+						id={`v${v.verse}`}
+						class="verse-paragraph relative pl-7 transition-colors duration-1000 rounded-lg"
+					>
+						<span class="absolute left-0 top-1 text-base font-bold text-blue-300 opacity-80 italic">
+							{v.verse}
+						</span>
+						{v.text}
+					</p>
+				))
+			}
+		</article>
 
 		<!-- Paginación integrada al final del texto -->
 		<nav class="mt-8 pt-6 border-t border-white/10">
-      <div class="flex flex-row justify-between items-center gap-2">
-        
-        {prevChapter ? (
-          <a 
-            href={`/?version=${version}&book=${book}&chapter=${prevChapter}`}
-            class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-5 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
-          >
-            <span class="text-blue-400 font-bold text-xs leading-none group-hover:-translate-x-0.5 transition-transform">
-              ←
-            </span>
-            <span class="opacity-70 group-hover:opacity-100 leading-none">
-              Capítulo {prevChapter}
-            </span>
-          </a>
-        ) : <div />}
+			<div class="flex flex-row justify-between items-center gap-2">
+				{
+					prevChapter ? (
+						<a
+							href={`/?version=${version}&book=${book}&chapter=${prevChapter}`}
+							class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-5 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
+						>
+							<span class="text-blue-400 font-bold text-xs leading-none group-hover:-translate-x-0.5 transition-transform">
+								←
+							</span>
+							<span class="opacity-70 group-hover:opacity-100 leading-none">
+								Capítulo {prevChapter}
+							</span>
+						</a>
+					) : (
+						<div />
+					)
+				}
 
-        <a 
-          href={`/?version=${version}&book=${book}&chapter=${nextChapter}`}
-          class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-6 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
-        >
-          <span class="opacity-70 group-hover:opacity-100 leading-none">
-            Capítulo {nextChapter}
-          </span>
-          <span class="text-blue-400 font-bold text-xs leading-none group-hover:translate-x-0.5 transition-transform">
-            →
-          </span>
-        </a>
-        
-      </div>
-    </nav>
+				<a
+					href={`/?version=${version}&book=${book}&chapter=${nextChapter}`}
+					class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-6 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
+				>
+					<span class="opacity-70 group-hover:opacity-100 leading-none">
+						Capítulo {nextChapter}
+					</span>
+					<span
+						class="text-blue-400 font-bold text-xs leading-none group-hover:translate-x-0.5 transition-transform"
+					>
+						→
+					</span>
+				</a>
+			</div>
+		</nav>
+
+		<SearchModal currentVersion={version} />
 	</main>
 
 	<style>
@@ -206,5 +256,49 @@ try {
 		initApp();
 		// Soporte para navegación de Astro
 		document.addEventListener("astro:after-swap", initApp);
+
+		// Función para abrir el buscador
+		const btnSearch = document.getElementById("trigger-search");
+		const searchOverlay = document.getElementById("search-overlay");
+		const searchInput = document.getElementById("search-input");
+
+		btnSearch?.addEventListener("click", () => {
+			// Quitamos hidden para mostrarlo
+			searchOverlay?.classList.remove("hidden");
+			// Ponemos el foco en el input automáticamente para escribir rápido
+			searchInput?.focus();
+		});
+
+		// Lógica de resaltado de versículos
+		function highlightVerse() {
+    	// Obtenemos el ID desde la URL (ej: #v12)
+    	const hash = window.location.hash;
+    	if (hash && hash.startsWith('#v')) {
+    	  const verseElement = document.querySelector(hash);
+			
+    	  if (verseElement) {
+    	    // Limpiamos resaltados previos si existen
+    	    document.querySelectorAll('.verse-paragraph').forEach(p => {
+    	      p.classList.remove('bg-blue-500/20', 'ring-1', 'ring-blue-500/30');
+    	    });
+
+    	    // Aplicamos el resaltado al versículo seleccionado
+    	    verseElement.classList.add('bg-blue-500/20', 'ring-1', 'ring-blue-500/30');
+
+    	    // Scroll suave hacia el versículo
+    	    verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    	    // Opcional: Quitar el resaltado después de unos segundos
+    	    setTimeout(() => {
+    	      verseElement.classList.remove('bg-blue-500/20', 'ring-1', 'ring-blue-500/30');
+    	    }, 5000);
+    	  }
+    	}
+  	}
+
+  	// Ejecutar cuando carga la página
+  	window.addEventListener('load', highlightVerse);
+  	// Ejecutar si el hash cambia sin recargar la página (navegación interna)
+  	window.addEventListener('hashchange', highlightVerse);
 	</script>
 </Layout>
