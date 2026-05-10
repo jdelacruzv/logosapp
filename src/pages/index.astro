@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import BibleSelector from "../components/BibleSelector.astro";
 import SearchModal from "../components/SearchModal.astro";
+import CompareModal from "../components/CompareModal.astro";
 
 const url = new URL(Astro.request.url);
 // Aseguramos que los valores sean minúsculas para la API
@@ -62,41 +63,6 @@ try {
 	</div>
 
 	<!-- Header -->
-	<!-- <header
-    class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
-  >
-    <div class="max-w-screen-md mx-auto px-4 h-16 flex items-center">
-      <button id="open-selector" class="flex items-center group gap-2 sm:gap-3 text-left">
-        <span class="text-[12px] sm:text-xs font-bold tracking-widest text-blue-400 uppercase">
-          {version}
-        </span>
-        
-        <span class="text-gray-600 font-light">|</span>
-
-        <span class="text-[12px] sm:text-xs font-bold tracking-widest text-white/60 uppercase group-hover:text-white transition-colors">
-          {book}
-        </span>
-
-        <span class="text-gray-600 font-light">|</span>
-
-        <span class="text-[12px] sm:text-xs font-bold tracking-widest text-white/60 uppercase">
-          Capítulo {chapter}
-        </span>
-
-        <span class="text-[8px] text-blue-400 opacity-50 group-hover:opacity-100 transition-opacity ml-1">
-          ▼
-        </span>
-      </button>
-
-			<div class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">		
-  			<button id="trigger-search" class="p-2 hover:bg-white/5 rounded-full transition-colors">
-  			  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  			    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-  			  </svg>
-  			</button>
-			</div>
-    </div>
-  </header> -->
 	<header
 		class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
 	>
@@ -154,7 +120,7 @@ try {
 	</header>
 
 	<!-- Contenido Principal -->
-	<main class="max-w-screen-md mx-auto px-3 md:px-6 py-10">
+	<main class="max-w-screen-md mx-auto px-3 md:px-6 py-5">
 		{
 			errorMsg && (
 				<div class="p-4 mb-6 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-center">
@@ -163,20 +129,25 @@ try {
 			)
 		}
 
+		<!-- Texto del Bible -->
 		<article
-			class="bible-text text-xl md:text-2xl space-y-6 font-serif leading-relaxed text-gray-200"
+			class="bible-text text-xl md:text-2xl font-serif leading-relaxed text-gray-200 space-y-4"
 		>
 			{
 				verses.map((v: any) => (
-					<p
+					<div
 						id={`v${v.verse}`}
-						class="verse-paragraph relative pl-7 transition-colors duration-1000 rounded-lg"
+						class="verse-paragraph block group transition-all p-1 -mx-1 rounded-lg hover:bg-white/[0.02]"
 					>
-						<span class="absolute left-0 top-1 text-base font-bold text-blue-300 opacity-80 italic">
+						<button
+							onclick={`openCompare('${book}', ${chapter}, ${v.verse})`}
+							class="inline-block mr-2 text-blue-500/60 font-bold hover:text-blue-400 transition-colors cursor-pointer font-sans text-[1em] align-baseline border-b border-transparent hover:border-blue-400/30"
+						>
 							{v.verse}
-						</span>
-						{v.text}
-					</p>
+						</button>
+
+						<span class="text-gray-300 selection:bg-blue-500/30">{v.text}</span>
+					</div>
 				))
 			}
 		</article>
@@ -219,6 +190,7 @@ try {
 		</nav>
 
 		<SearchModal currentVersion={version} />
+		<CompareModal />
 	</main>
 
 	<style>
@@ -271,34 +243,38 @@ try {
 
 		// Lógica de resaltado de versículos
 		function highlightVerse() {
-    	// Obtenemos el ID desde la URL (ej: #v12)
-    	const hash = window.location.hash;
-    	if (hash && hash.startsWith('#v')) {
-    	  const verseElement = document.querySelector(hash);
-			
-    	  if (verseElement) {
-    	    // Limpiamos resaltados previos si existen
-    	    document.querySelectorAll('.verse-paragraph').forEach(p => {
-    	      p.classList.remove('bg-blue-500/20', 'ring-1', 'ring-blue-500/30');
-    	    });
+			// Obtenemos el ID desde la URL (ej: #v12)
+			const hash = window.location.hash;
+			if (hash && hash.startsWith("#v")) {
+				const verseElement = document.querySelector(hash);
 
-    	    // Aplicamos el resaltado al versículo seleccionado
-    	    verseElement.classList.add('bg-blue-500/20', 'ring-1', 'ring-blue-500/30');
+				if (verseElement) {
+					// Limpiamos resaltados previos si existen
+					document.querySelectorAll(".verse-paragraph").forEach((p) => {
+						p.classList.remove("bg-blue-500/20", "ring-1", "ring-blue-500/30");
+					});
 
-    	    // Scroll suave hacia el versículo
-    	    verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					// Aplicamos el resaltado al versículo seleccionado
+					verseElement.classList.add("bg-blue-500/20", "ring-1", "ring-blue-500/30");
 
-    	    // Opcional: Quitar el resaltado después de unos segundos
-    	    setTimeout(() => {
-    	      verseElement.classList.remove('bg-blue-500/20', 'ring-1', 'ring-blue-500/30');
-    	    }, 5000);
-    	  }
-    	}
-  	}
+					// Scroll suave hacia el versículo
+					verseElement.scrollIntoView({ behavior: "smooth", block: "center" });
 
-  	// Ejecutar cuando carga la página
-  	window.addEventListener('load', highlightVerse);
-  	// Ejecutar si el hash cambia sin recargar la página (navegación interna)
-  	window.addEventListener('hashchange', highlightVerse);
+					// Opcional: Quitar el resaltado después de unos segundos
+					setTimeout(() => {
+						verseElement.classList.remove(
+							"bg-blue-500/20",
+							"ring-1",
+							"ring-blue-500/30",
+						);
+					}, 5000);
+				}
+			}
+		}
+
+		// Ejecutar cuando carga la página
+		window.addEventListener("load", highlightVerse);
+		// Ejecutar si el hash cambia sin recargar la página (navegación interna)
+		window.addEventListener("hashchange", highlightVerse);
 	</script>
 </Layout>
