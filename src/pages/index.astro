@@ -4,6 +4,7 @@ import BibleSelector from "../components/BibleSelector.astro";
 import SearchModal from "../components/SearchModal.astro";
 import CompareModal from "../components/CompareModal.astro";
 import Header from "../components/Header.astro";
+import SplashScreen from "../components/SplashScreen.astro";
 
 const url = new URL(Astro.request.url);
 // Aseguramos que los valores sean minúsculas para la API
@@ -51,31 +52,7 @@ try {
 
 <Layout title={`LogosApp | ${book} ${chapter}`}>
 	<!-- Splash LogosAPP -->
-	<div
-		id="splash-screen"
-		class="fixed inset-0 z-[200] bg-[#0c0c0e] flex flex-col items-center justify-center transition-all duration-1000"
-	>
-		<div class="text-center animate-in fade-in zoom-in duration-700">
-			<h1 class="text-5xl font-black text-blue-500 tracking-tighter">LogosAPP</h1>
-			<div class="mt-8 flex justify-center gap-2">
-				<div
-					class="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"
-				>
-				</div>
-				<div
-					class="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"
-				>
-				</div>
-				<div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-			</div>
-			<p
-				id="splash-text"
-				class="mt-10 text-[10px] uppercase tracking-[0.4em] text-gray-500"
-			>
-				Sincronizando con el servidor...
-			</p>
-		</div>
-	</div>
+	<SplashScreen />
 
 	<!-- Overlay del Selector -->
 	<div
