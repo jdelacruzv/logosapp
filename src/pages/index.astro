@@ -5,6 +5,7 @@ import SearchModal from "../components/SearchModal.astro";
 import CompareModal from "../components/CompareModal.astro";
 import Header from "../components/Header.astro";
 import SplashScreen from "../components/SplashScreen.astro";
+import SelectorOverlay from "../components/SelectorOverlay.astro";
 
 const url = new URL(Astro.request.url);
 // Aseguramos que los valores sean minúsculas para la API
@@ -51,27 +52,16 @@ try {
 ---
 
 <Layout title={`LogosApp | ${book} ${chapter}`}>
-	<!-- Splash LogosAPP -->
+	<!-- Splash screen LogosAPP -->
 	<SplashScreen />
 
-	<!-- Overlay del Selector -->
-	<div
-		id="selector-overlay"
-		class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex items-end justify-center transition-all"
-	>
-		<div class="w-full max-w-screen-md animate-slide-up">
-			<BibleSelector
-				currentVersion={version}
-				currentBook={book}
-				currentChapter={chapter}
-			/>
-		</div>
-	</div>
+	<!-- Selector overlay -->
+	<SelectorOverlay version={version} book={book} chapter={chapter} />
 
 	<!-- Header -->
 	<Header version={version} book={capitalizedBook} chapter={chapter} />
-	
-	<!-- Contenido Principal -->
+
+	<!-- Main content -->
 	<main class="max-w-screen-md mx-auto px-3 md:px-6 py-5">
 		{
 			errorMsg && (
@@ -81,7 +71,7 @@ try {
 			)
 		}
 
-		<!-- Texto del Bible -->
+		<!-- Bible text -->
 		<article
 			class="bible-text text-xl md:text-2xl font-serif leading-tight md:leading-relaxed text-gray-200 space-y-4"
 		>
@@ -141,7 +131,10 @@ try {
 			</div>
 		</nav>
 
+		<!-- Search modal -->
 		<SearchModal currentVersion={version} />
+
+		<!-- Comparison Modal -->
 		<CompareModal />
 	</main>
 

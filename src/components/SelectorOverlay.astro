@@ -1,0 +1,24 @@
+---
+import BibleSelector from "./BibleSelector.astro";
+
+interface Props {
+	version: string;
+	book: string;
+	chapter: number;
+}
+
+const { version, book, chapter } = Astro.props;
+---
+
+<div
+	id="selector-overlay"
+	class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex items-end justify-center transition-all"
+>
+	<div class="w-full max-w-screen-md animate-slide-up">
+		<BibleSelector
+			currentVersion={version}
+			currentBook={book}
+			currentChapter={chapter}
+		/>
+	</div>
+</div>
