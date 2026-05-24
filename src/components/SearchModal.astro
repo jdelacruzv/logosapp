@@ -145,9 +145,9 @@ const { currentVersion = "rv1960" } = Astro.props;
 				return `
         <a href="${href}" class="block p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-blue-500/30 transition-all active:scale-[0.98] group">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em]">${b} ${c}:${v}</span>
+            <span class="text-blue-400 text-[12px] font-bold uppercase tracking-[0.1em]">${b} ${c}:${v}</span>
           </div>
-          <p class="text-gray-300 text-sm leading-relaxed font-serif italic opacity-80 group-hover:opacity-100">"${t}"</p>
+          <p class="text-gray-300 text-[18px] leading-relaxed font-serif opacity-80 group-hover:opacity-100">${t}</p>
         </a>`;
 			})
 			.join("");
