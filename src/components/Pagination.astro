@@ -1,0 +1,46 @@
+---
+interface Props {
+	version: string;
+	book: string;
+	prevChapter: number | null;
+	nextChapter: number;
+}
+
+const { version, book, prevChapter, nextChapter } = Astro.props;
+---
+
+<nav class="mt-8 pt-6 border-t border-white/10">
+	<div class="flex flex-row justify-between items-center gap-2">
+		{
+			prevChapter ? (
+				<a
+					href={`/?version=${version}&book=${book}&chapter=${prevChapter}`}
+					class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-5 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
+				>
+					<span class="text-blue-400 font-bold text-xs leading-none group-hover:-translate-x-0.5 transition-transform">
+						←
+					</span>
+					<span class="opacity-70 group-hover:opacity-100 leading-none">
+						Capítulo {prevChapter}
+					</span>
+				</a>
+			) : (
+				<div />
+			)
+		}
+
+		<a
+			href={`/?version=${version}&book=${book}&chapter=${nextChapter}`}
+			class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-6 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
+		>
+			<span class="opacity-70 group-hover:opacity-100 leading-none">
+				Capítulo {nextChapter}
+			</span>
+			<span
+				class="text-blue-400 font-bold text-xs leading-none group-hover:translate-x-0.5 transition-transform"
+			>
+				→
+			</span>
+		</a>
+	</div>
+</nav>

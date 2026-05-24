@@ -1,11 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import BibleSelector from "../components/BibleSelector.astro";
 import SearchModal from "../components/SearchModal.astro";
 import CompareModal from "../components/CompareModal.astro";
 import Header from "../components/Header.astro";
 import SplashScreen from "../components/SplashScreen.astro";
 import SelectorOverlay from "../components/SelectorOverlay.astro";
+import Pagination from "../components/Pagination.astro";
 
 const url = new URL(Astro.request.url);
 // Aseguramos que los valores sean minúsculas para la API
@@ -95,41 +95,12 @@ try {
 		</article>
 
 		<!-- Paginación integrada al final del texto -->
-		<nav class="mt-8 pt-6 border-t border-white/10">
-			<div class="flex flex-row justify-between items-center gap-2">
-				{
-					prevChapter ? (
-						<a
-							href={`/?version=${version}&book=${book}&chapter=${prevChapter}`}
-							class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-5 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
-						>
-							<span class="text-blue-400 font-bold text-xs leading-none group-hover:-translate-x-0.5 transition-transform">
-								←
-							</span>
-							<span class="opacity-70 group-hover:opacity-100 leading-none">
-								Capítulo {prevChapter}
-							</span>
-						</a>
-					) : (
-						<div />
-					)
-				}
-
-				<a
-					href={`/?version=${version}&book=${book}&chapter=${nextChapter}`}
-					class="inline-flex items-center gap-1 bg-[#1a1a1a] border border-white/10 text-white px-6 py-4 rounded-full text-[14px] font-sans font-medium hover:bg-[#222] transition-all active:scale-95 cursor-pointer group h-fit"
-				>
-					<span class="opacity-70 group-hover:opacity-100 leading-none">
-						Capítulo {nextChapter}
-					</span>
-					<span
-						class="text-blue-400 font-bold text-xs leading-none group-hover:translate-x-0.5 transition-transform"
-					>
-						→
-					</span>
-				</a>
-			</div>
-		</nav>
+		<Pagination 
+			version={version} 
+			book={book} 
+			prevChapter={prevChapter} 
+			nextChapter={nextChapter} 
+		/>
 
 		<!-- Search modal -->
 		<SearchModal currentVersion={version} />
