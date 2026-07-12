@@ -114,12 +114,14 @@ try {
 	</main>
 
 	<script>
+		// Inicializa la aplicación y dispara el evento "logos:init" para ocultar el splash screen
 		function initApp() {
 			document.dispatchEvent(new Event("logos:init"));
 		}
 
 		initApp();
 
+		// Asegura que la inicialización se ejecute después de cada swap de Astro (cuando se navega a otra página)
 		document.addEventListener("astro:after-swap", initApp);
 	</script>
 </Layout>

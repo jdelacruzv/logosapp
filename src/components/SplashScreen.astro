@@ -26,3 +26,29 @@
 		Preparando lectura...
 	</p>
 </div>
+
+<script>
+	function hideSplash() {
+		const splash = document.getElementById("splash-screen");
+
+		if (!splash) return;
+
+		// Evita ejecutar varias veces
+		if (splash.dataset.initialized === "true") return;
+
+		splash.dataset.initialized = "true";
+
+		setTimeout(() => {
+			splash.classList.add("opacity-0", "pointer-events-none");
+
+			// Opcional: eliminar del DOM cuando termina la transición
+			setTimeout(() => {
+				splash.remove();
+			}, 500);
+		}, 800);
+	}
+
+	hideSplash();
+
+	document.addEventListener("logos:init", hideSplash);
+</script>
