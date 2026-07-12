@@ -114,104 +114,12 @@ try {
 	</main>
 
 	<script>
-		// Lógica simplificada: Solo apertura del selector
-		const splash = document.getElementById("splash-screen");
-		const openBtn = document.getElementById("open-selector");
-		const overlay = document.getElementById("selector-overlay");
+		function initApp() {
+			document.dispatchEvent(new Event("logos:init"));
+		}
 
-		const initApp = () => {
-			openBtn?.addEventListener("click", () => {
-				overlay?.classList.remove("hidden");
-			});
-			// Cerrar al hacer clic fuera del contenido del selector
-			overlay?.addEventListener("click", (e) => {
-				if (e.target === overlay) {
-					overlay.classList.add("hidden");
-				}
-			});
-		};
 		initApp();
-		// Soporte para navegación de Astro
+
 		document.addEventListener("astro:after-swap", initApp);
-		// Función para abrir el buscador
-		const btnSearch = document.getElementById("trigger-search");
-		const searchOverlay = document.getElementById("search-overlay");
-		const searchInput = document.getElementById("search-input");
-		btnSearch?.addEventListener("click", () => {
-			// Quitamos hidden para mostrarlo
-			searchOverlay?.classList.remove("hidden");
-			// Ponemos el foco en el input automáticamente para escribir rápido
-			searchInput?.focus();
-		});
-		// Lógica de resaltado de versículos
-		function highlightVerse() {
-			// Obtenemos el ID desde la URL (ej: #v12)
-			const hash = window.location.hash;
-			if (hash && hash.startsWith("#v")) {
-				const verseElement = document.querySelector(hash);
-				if (verseElement) {
-					// Limpiamos resaltados previos si existen
-					document.querySelectorAll(".verse-paragraph").forEach((p) => {
-						p.classList.remove("bg-blue-500/20", "ring-1", "ring-blue-500/30");
-					});
-					// Aplicamos el resaltado al versículo seleccionado
-					verseElement.classList.add("bg-blue-500/20", "ring-1", "ring-blue-500/30");
-					// Scroll suave hacia el versículo
-					verseElement.scrollIntoView({ behavior: "smooth", block: "center" });
-					// Opcional: Quitar el resaltado después de unos segundos
-					setTimeout(() => {
-						verseElement.classList.remove(
-							"bg-blue-500/20",
-							"ring-1",
-							"ring-blue-500/30",
-						);
-					}, 5000);
-				}
-			}
-		}
-		// Ejecutar cuando carga la página
-		window.addEventListener("load", highlightVerse);
-		// Ejecutar si el hash cambia sin recargar la página (navegación interna)
-		window.addEventListener("hashchange", highlightVerse);
-
-		// 1. PERSISTENCIA: Guardar donde se quedó el usuario
-		function saveCurrentLocation() {
-			const params = new URLSearchParams(window.location.search);
-			const data = {
-				version: params.get("version") || "rv1960",
-				book: params.get("book") || "genesis",
-				chapter: params.get("chapter") || "1",
-			};
-			localStorage.setItem("last_bible_read", JSON.stringify(data));
-		}
-
-		// 2. REDIRECCIÓN: Si entra al home puro (/), llevarlo a la última lectura
-		function redirectToLastRead() {
-			const lastRead = localStorage.getItem("last_bible_read");
-			const params = new URLSearchParams(window.location.search);
-
-			// Solo redirigir si no hay parámetros en la URL (primera entrada)
-			if (!params.has("book") && lastRead) {
-				const { version, book, chapter } = JSON.parse(lastRead);
-				window.location.href = `/?version=${version}&book=${book}&chapter=${chapter}`;
-			} else {
-				// Si ya está en la página correcta, ocultar splash tras un breve delay
-				// para dar tiempo a que los componentes terminen de "despertar"
-				setTimeout(() => {
-					if (splash) {
-						splash.classList.add("opacity-0", "pointer-events-none");
-					}
-				}, 800);
-			}
-		}
-
-		// Ejecutar al cargar
-		window.addEventListener("load", () => {
-			redirectToLastRead();
-			saveCurrentLocation();
-		});
-
-		// Guardar ubicación cada vez que el usuario use el selector (opcional)
-		document.addEventListener("astro:after-swap", saveCurrentLocation);
 	</script>
 </Layout>
