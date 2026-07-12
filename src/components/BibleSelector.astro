@@ -82,6 +82,9 @@ const {
 	const currentVersion = container?.dataset.version || "rv1960";
 	const currentBook = container?.dataset.book || "genesis";
 
+	const closeBtn = document.getElementById("close-selector-btn");
+	const selectorOverlay = document.getElementById("selector-overlay");
+
 	async function loadData() {
 		const vSelect = document.getElementById("version-select");
 		const bSelect = document.getElementById("book-select");
@@ -206,5 +209,9 @@ const {
 
 			window.location.href = `/?version=${v}&book=${b}&chapter=${parsedChapter}`;
 		}
+	});
+
+	closeBtn?.addEventListener("click", () => {
+		selectorOverlay?.classList.add("hidden");
 	});
 </script>
