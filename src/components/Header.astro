@@ -15,7 +15,7 @@ const { version, book, chapter } = Astro.props;
 		class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between"
 	>
 		<button
-			id="open-selector"
+			id="btn-open-selector"
 			class="flex flex-col sm:flex-row sm:items-center group gap-1 sm:gap-3 text-left cursor-pointer"
 		>
 			<!-- CONTENEDOR DE LA VERSIÓN -->
@@ -50,7 +50,7 @@ const { version, book, chapter } = Astro.props;
 		</button>
 
 		<button
-			id="trigger-search"
+			id="btn-open-search"
 			class="p-2 hover:bg-white/5 rounded-full transition-all cursor-pointer flex items-center justify-center"
 			aria-label="Buscar"
 		>
@@ -70,3 +70,35 @@ const { version, book, chapter } = Astro.props;
 		</button>
 	</div>
 </header>
+
+<script>
+	function initHeader() {
+		const openSelector = document.getElementById("btn-open-selector");
+		const selectorOverlay = document.getElementById("selector-overlay");
+
+		const openSearch = document.getElementById("btn-open-search");
+		const searchOverlay = document.getElementById("search-overlay");
+		const searchInput = document.getElementById("search-input");
+
+		if (openSelector && selectorOverlay) {
+			openSelector.onclick = () => {
+				selectorOverlay.classList.remove("hidden");
+			};
+		}
+
+		if (openSearch && searchOverlay) {
+			openSearch.onclick = () => {
+				searchOverlay.classList.remove("hidden");
+
+				// Esperamos un instante para asegurar que el modal ya es visible
+				requestAnimationFrame(() => {
+					searchInput?.focus();
+				});
+			};
+		}
+	}
+
+	initHeader();
+
+	document.addEventListener("logos:init", initHeader);
+</script>
