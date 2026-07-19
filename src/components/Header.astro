@@ -1,104 +1,90 @@
 ---
 interface Props {
-	version: string;
-	book: string;
-	chapter: number;
+  version: string;
+  book: string;
+  chapter: number;
 }
 
 const { version, book, chapter } = Astro.props;
 ---
 
-<header
-	class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800"
->
-	<div
-		class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between"
-	>
-		<button
-			id="btn-open-selector"
-			class="flex flex-col sm:flex-row sm:items-center group gap-1 sm:gap-3 text-left cursor-pointer"
-		>
-			<!-- CONTENEDOR DE LA VERSIÓN -->
-			<span
-				class="text-[14px] sm:text-xs font-bold tracking-widest text-blue-400 uppercase leading-none"
-			>
-				{version}
-			</span>
+<header class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800">
+  <div class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">
+    <button
+      id="btn-open-selector"
+      class="flex flex-col sm:flex-row sm:items-center group gap-1 sm:gap-3 text-left cursor-pointer"
+    >
+      <!-- CONTENEDOR DE LA VERSIÓN -->
+      <span
+        class="text-[14px] sm:text-xs font-bold tracking-widest text-blue-400 uppercase leading-none"
+      >
+        {version}
+      </span>
 
-			<!-- SEPARADOR 1: Se oculta en móvil y aparece en tablets/desktop -->
-			<span class="text-gray-600 font-light leading-none hidden sm:block">|</span>
+      <!-- SEPARADOR 1: Se oculta en móvil y aparece en tablets/desktop -->
+      <span class="text-gray-600 font-light leading-none hidden sm:block">|</span>
 
-			<!-- CONTENEDOR DE LIBRO + CAPÍTULO -->
-			<div class="flex items-center gap-1 sm:gap-3 leading-none">
-				<span
-					class="text-[10px] sm:text-xs font-bold tracking-widest text-white/60 uppercase group-hover:text-white transition-colors"
-				>
-					{book}
-				</span>
-				<span class="text-gray-600 font-light">|</span>
-				<span
-					class="text-[10px] sm:text-xs font-bold tracking-widest text-white/60 uppercase"
-				>
-					Capítulo {chapter}
-				</span>
-				<span
-					class="text-[8px] text-blue-400 opacity-50 group-hover:opacity-100 transition-opacity ml-1"
-				>
-					▼
-				</span>
-			</div>
-		</button>
+      <!-- CONTENEDOR DE LIBRO + CAPÍTULO -->
+      <div class="flex items-center gap-1 sm:gap-3 leading-none">
+        <span
+          class="text-[10px] sm:text-xs font-bold tracking-widest text-white/60 uppercase group-hover:text-white transition-colors"
+        >
+          {book}
+        </span>
+        <span class="text-gray-600 font-light">|</span>
+        <span class="text-[10px] sm:text-xs font-bold tracking-widest text-white/60 uppercase">
+          Capítulo {chapter}
+        </span>
+        <span
+          class="text-[8px] text-blue-400 opacity-50 group-hover:opacity-100 transition-opacity ml-1"
+        >
+          ▼
+        </span>
+      </div>
+    </button>
 
-		<button
-			id="btn-open-search"
-			class="p-2 hover:bg-white/5 rounded-full transition-all cursor-pointer flex items-center justify-center"
-			aria-label="Buscar"
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-5 w-5 text-gray-400 hover:text-blue-400 transition-colors"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-			</svg>
-		</button>
-	</div>
+    <button
+      id="btn-open-search"
+      class="p-2 hover:bg-white/5 rounded-full transition-all cursor-pointer flex items-center justify-center"
+      aria-label="Buscar"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-gray-400 hover:text-blue-400 transition-colors"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </button>
+  </div>
 </header>
 
-<script>
-	function initHeader() {
-		const openSelector = document.getElementById("btn-open-selector");
-		const selectorOverlay = document.getElementById("selector-overlay");
+<script type="module">
+  import { emit, onLogosInit } from "../lib/events";
+  import { byId } from "../lib/ui";
 
-		const openSearch = document.getElementById("btn-open-search");
-		const searchOverlay = document.getElementById("search-overlay");
-		const searchInput = document.getElementById("search-input");
+  function initHeader() {
+    const btnOpenSelector = byId("btn-open-selector");
+    const btnOpenSearch = byId("btn-open-search");
 
-		if (openSelector && selectorOverlay) {
-			openSelector.onclick = () => {
-				selectorOverlay.classList.remove("hidden");
-			};
-		}
+    if (btnOpenSelector) {
+      btnOpenSelector.onclick = () => {
+        emit("logos:open-selector");
+      };
+    }
 
-		if (openSearch && searchOverlay) {
-			openSearch.onclick = () => {
-				searchOverlay.classList.remove("hidden");
+    if (btnOpenSearch) {
+      btnOpenSearch.onclick = () => {
+        emit("logos:open-search");
+      };
+    }
+  }
 
-				// Esperamos un instante para asegurar que el modal ya es visible
-				requestAnimationFrame(() => {
-					searchInput?.focus();
-				});
-			};
-		}
-	}
-
-	initHeader();
-
-	document.addEventListener("logos:init", initHeader);
+  onLogosInit(initHeader);
 </script>
