@@ -11,7 +11,7 @@ const { version, book, chapter } = Astro.props;
 <header class="sticky top-0 z-50 bg-[#121212]/90 backdrop-blur-md border-b border-gray-800">
   <div class="max-w-screen-md mx-auto px-4 h-16 flex items-center justify-between">
     <button
-      id="btn-open-selector"
+      id="btn-open-bible-navigator"
       class="flex flex-col sm:flex-row sm:items-center group gap-1 sm:gap-3 text-left cursor-pointer"
     >
       <!-- CONTENEDOR DE LA VERSIÓN -->
@@ -66,22 +66,22 @@ const { version, book, chapter } = Astro.props;
 </header>
 
 <script type="module">
-  import { emit, onLogosInit } from "../lib/events";
+  import { emit, Events, onLogosInit } from "../lib/events";
   import { byId } from "../lib/ui";
 
   function initHeader() {
-    const btnOpenSelector = byId("btn-open-selector");
+    const btnOpenBibleNavigator = byId("btn-open-bible-navigator");
     const btnOpenSearch = byId("btn-open-search");
 
-    if (btnOpenSelector) {
-      btnOpenSelector.onclick = () => {
-        emit("logos:open-selector");
+    if (btnOpenBibleNavigator) {
+      btnOpenBibleNavigator.onclick = () => {
+        emit(Events.OPEN_BIBLE_NAVIGATOR);
       };
     }
 
     if (btnOpenSearch) {
       btnOpenSearch.onclick = () => {
-        emit("logos:open-search");
+        emit(Events.OPEN_SEARCH);
       };
     }
   }

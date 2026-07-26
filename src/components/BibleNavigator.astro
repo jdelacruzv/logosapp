@@ -1,0 +1,69 @@
+---
+import BibleNavigatorForm from "./BibleNavigatorForm.astro";
+import { byId, show, hide } from "../lib/ui";
+import { Events, on, onLogosInit } from "../lib/events";
+
+interface Props {
+  version: string;
+  book: string;
+  chapter: number;
+}
+
+const { version, book, chapter } = Astro.props;
+---
+
+<div
+  id="overlay-bible-navigator"
+  class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm hidden flex items-end justify-center transition-all"
+>
+  <div class="w-full max-w-screen-md animate-slide-up">
+    <BibleNavigatorForm version={version} book={book} chapter={chapter} />
+  </div>
+</div>
+
+<style>
+  .animate-slide-up {
+    animation: slideUp 0.3s cubic-bezier(0, 0.55, 0.45, 1);
+  }
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script type="module">
+  import { byId, show, hide } from "../lib/ui";
+  import { Events, on, onLogosInit } from "../lib/events";
+
+  function initBibleNavigator() {
+    const overlay = byId("overlay-bible-navigator");
+
+    if (!overlay) return;
+
+    function openNavigator() {
+      show(overlay);
+    }
+
+    function closeNavigator() {
+      hide(overlay);
+    }
+
+    on(Events.OPEN_BIBLE_NAVIGATOR, openNavigator);
+
+    on(Events.CLOSE_BIBLE_NAVIGATOR, closeNavigator);
+
+    function handleOverlayClick(event) {
+      if (event.target === overlay) {
+        closeNavigator();
+      }
+    }
+
+    overlay.addEventListener("click", handleOverlayClick);
+  }
+
+  onLogosInit(initBibleNavigator);
+</script>

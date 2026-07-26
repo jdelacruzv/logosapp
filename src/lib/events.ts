@@ -1,4 +1,20 @@
 /**
+ * Eventos globales de LogosApp.
+ */
+export const Events = {
+  LOGOS_INIT: "logos:init",
+
+  OPEN_BIBLE_NAVIGATOR: "logos:open-bible-navigator",
+  CLOSE_BIBLE_NAVIGATOR: "logos:close-bible-navigator",
+
+  OPEN_SEARCH: "logos:open-search",
+  CLOSE_SEARCH: "logos:close-search",
+
+  OPEN_COMPARE: "logos:open-compare",
+  CLOSE_COMPARE: "logos:close-compare",
+} as const;
+
+/**
  * Ejecuta una función cuando la aplicación
  * termina de inicializarse.
  */
@@ -11,15 +27,17 @@ export function onLogosInit(callback: () => void): void {
  * Emitir un evento personalizado.
  */
 export function emit(eventName: string): void {
-	document.dispatchEvent(new Event(eventName));
+  document.dispatchEvent(new Event(eventName));
 }
 
 /**
  * Escuchar un evento personalizado.
+ * Devuelve una función para cancelar la suscripción.
  */
-export function on(
-	eventName: string,
-	callback: EventListener,
-): void {
-	document.addEventListener(eventName, callback);
+export function on(eventName: string, callback: EventListener): () => void {
+  document.addEventListener(eventName, callback);
+
+  return () => {
+    document.removeEventListener(eventName, callback);
+  };
 }

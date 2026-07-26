@@ -4,7 +4,7 @@ import SearchModal from "../components/SearchModal.astro";
 import CompareModal from "../components/CompareModal.astro";
 import Header from "../components/Header.astro";
 import SplashScreen from "../components/SplashScreen.astro";
-import SelectorOverlay from "../components/SelectorOverlay.astro";
+import BibleNavigator from "../components/BibleNavigator.astro";
 import Pagination from "../components/Pagination.astro";
 import { BIBLE_CHAPTERS } from "../utils/bible_chapters.ts";
 
@@ -60,7 +60,7 @@ try {
 	<SplashScreen />
 
 	<!-- Selector overlay -->
-	<SelectorOverlay version={version} book={book} chapter={chapter} />
+	<BibleNavigator version={version} book={book} chapter={chapter} />
 
 	<!-- Header -->
 	<Header version={version} book={capitalizedBook} chapter={chapter} />
