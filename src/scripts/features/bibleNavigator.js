@@ -1,6 +1,14 @@
-import { byId, show, hide } from "../lib/ui";
-import { Events, on } from "../lib/events";
+import { byId, show, hide } from "../../lib/ui";
+import { Events, on } from "../../lib/events";
 
+/**
+ * Inicializa el navegador bíblico.
+ *
+ * Responsabilidades:
+ * - Abrir el overlay.
+ * - Cerrar el overlay.
+ * - Cerrar al pulsar fuera.
+ */
 export function initBibleNavigator() {
   console.log("BibleNavigator inicializado");
 
@@ -17,7 +25,7 @@ export function initBibleNavigator() {
     hide(overlay);
   }
 
-  function handleOverlayClick(event: MouseEvent) {
+  function handleOverlayClick(event) {
     if (event.target === overlay) {
       closeNavigator();
     }

@@ -2,173 +2,164 @@
 const { currentVersion = "rv1960" } = Astro.props;
 ---
 
-<div
-	id="search-overlay"
-	class="fixed inset-0 z-[60] bg-[#121212] hidden flex flex-col"
->
-	<div class="border-b border-white/10 bg-[#121212]">
-		<div class="max-w-screen-md mx-auto flex items-center gap-3 p-4">
-			<button
-				id="close-search"
-				class="p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-full transition-all active:scale-90"
-				aria-label="Volver"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M15 19l-7-7 7-7"></path>
-				</svg>
-			</button>
+<div id="search-overlay" class="fixed inset-0 z-[60] bg-[#121212] hidden flex flex-col">
+  <div class="border-b border-white/10 bg-[#121212]">
+    <div class="max-w-screen-md mx-auto flex items-center gap-3 p-4">
+      <button
+        id="btn-close-search-modal"
+        class="p-2 -ml-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-full transition-all active:scale-90"
+        aria-label="Volver"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+      </button>
 
-			<input
-				type="text"
-				id="search-input"
-				placeholder="Buscar palabra o frase..."
-				class="flex-1 bg-transparent text-white outline-none text-lg"
-				autocomplete="off"
-			/>
+      <input
+        type="text"
+        id="search-modal-input"
+        placeholder="Buscar palabra o frase..."
+        class="flex-1 bg-transparent text-white outline-none text-lg"
+        autocomplete="off"
+      />
 
-			<div
-				id="search-loading"
-				class="hidden animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"
-			>
-			</div>
-		</div>
-	</div>
+      <div
+        id="search-modal-loading"
+        class="hidden animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"
+      >
+      </div>
+    </div>
+  </div>
 
-	<div class="flex-1 overflow-y-auto bg-[#121212]">
-		<div class="max-w-screen-md mx-auto px-3 md:px-6 py-10">
-			<div
-				id="search-stats"
-				class="flex flex-col items-center justify-center mb-5 hidden"
-			>
-				<span
-					class="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] bg-blue-500/10 px-4 py-1.5 rounded-full"
-				>
-					<span id="results-count">0</span> Versículos encontrados
-				</span>
-				<div class="h-[1px] w-8 bg-white/10 mt-6"></div>
-			</div>
+  <div class="flex-1 overflow-y-auto bg-[#121212]">
+    <div class="max-w-screen-md mx-auto px-3 md:px-6 py-10">
+      <div id="search-modal-stats" class="flex flex-col items-center justify-center mb-5 hidden">
+        <span
+          class="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] bg-blue-500/10 px-4 py-1.5 rounded-full"
+        >
+          <span id="results-count">0</span> Versículos encontrados
+        </span>
+        <div class="h-[1px] w-8 bg-white/10 mt-6"></div>
+      </div>
 
-			<div id="search-results" class="space-y-6">
-				<p class="text-gray-500 text-center mt-10 text-sm italic">
-					Empieza a escribir para buscar en {currentVersion.toUpperCase()}...
-				</p>
-			</div>
-		</div>
-	</div>
+      <div id="search-modal-results" class="space-y-6">
+        <p class="text-gray-500 text-center mt-10 text-sm italic">
+          Empieza a escribir para buscar en {currentVersion.toUpperCase()}...
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script define:vars={{ currentVersion }}>
-	const searchOverlay = document.getElementById("search-overlay");
-	const searchInput = document.getElementById("search-input");
-	const statsContainer = document.getElementById("search-stats");
-	const countElement = document.getElementById("results-count");
-	const searchResults = document.getElementById("search-results");
-	const loading = document.getElementById("search-loading");
-	const closeBtn = document.getElementById("close-search");
-	let debounceTimer;
+  const searchOverlay = document.getElementById("search-overlay");
+  const searchInput = document.getElementById("search-modal-input");
+  const searchResults = document.getElementById("search-modal-results");
+  const loading = document.getElementById("search-modal-loading");
+  const statsContainer = document.getElementById("search-modal-stats");
+  const closeBtn = document.getElementById("btn-close-search-modal");
+  const countElement = document.getElementById("results-count");
+  let debounceTimer;
 
-	// --- FUNCIÓN PARA RESETEAR TODO ---
-	function resetSearch() {
-		if (searchInput) searchInput.value = "";
-		if (statsContainer) statsContainer.classList.add("hidden"); // Oculta el contador
-		if (countElement) countElement.innerText = "0";
-		if (searchResults) {
-			searchResults.innerHTML = `<p class="text-gray-500 text-center mt-10 text-sm italic">Empieza a escribir para buscar en ${currentVersion.toUpperCase()}...</p>`;
-		}
-	}
+  // --- FUNCIÓN PARA RESETEAR TODO ---
+  // function resetSearch() {
+  // 	if (searchInput) searchInput.value = "";
+  // 	if (statsContainer) statsContainer.classList.add("hidden"); // Oculta el contador
+  // 	if (countElement) countElement.innerText = "0";
+  // 	if (searchResults) {
+  // 		searchResults.innerHTML = `<p class="text-gray-500 text-center mt-10 text-sm italic">Empieza a escribir para buscar en ${currentVersion.toUpperCase()}...</p>`;
+  // 	}
+  // }
 
-	async function performSearch(query) {
-		const cleanQuery = query.trim();
-		if (cleanQuery.length < 3) {
-			if (statsContainer) statsContainer.classList.add("hidden");
-			if (searchResults)
-				searchResults.innerHTML = `<p class="text-gray-500 text-center mt-10 text-sm italic">Escribe al menos 3 letras...</p>`;
-			return;
-		}
+  async function performSearch(query) {
+    const cleanQuery = query.trim();
+    if (cleanQuery.length < 3) {
+      if (statsContainer) statsContainer.classList.add("hidden");
+      if (searchResults)
+        searchResults.innerHTML = `<p class="text-gray-500 text-center mt-10 text-sm italic">Escribe al menos 3 letras...</p>`;
+      return;
+    }
 
-		loading.classList.remove("hidden");
+    loading.classList.remove("hidden");
 
-		try {
-			const res = await fetch(
-				`https://logosapi.onrender.com/search/${currentVersion}?q=${encodeURIComponent(cleanQuery)}`,
-			);
-			if (!res.ok) throw new Error("Error en la respuesta");
-			const data = await res.json();
-			renderResults(data);
-		} catch (e) {
-			if (searchResults)
-				searchResults.innerHTML = `<p class="text-red-400 text-center mt-10 text-sm">Error al conectar con el servidor.</p>`;
-			if (statsContainer) statsContainer.classList.add("hidden");
-		} finally {
-			loading.classList.add("hidden");
-		}
-	}
+    try {
+      const res = await fetch(
+        `https://logosapi.onrender.com/search/${currentVersion}?q=${encodeURIComponent(cleanQuery)}`
+      );
+      if (!res.ok) throw new Error("Error en la respuesta");
+      const data = await res.json();
+      renderResults(data);
+    } catch (e) {
+      if (searchResults)
+        searchResults.innerHTML = `<p class="text-red-400 text-center mt-10 text-sm">Error al conectar con el servidor.</p>`;
+      if (statsContainer) statsContainer.classList.add("hidden");
+    } finally {
+      loading.classList.add("hidden");
+    }
+  }
 
-	function renderResults(data) {
-		const results = Array.isArray(data) ? data : data.results || [];
+  function renderResults(data) {
+    const results = Array.isArray(data) ? data : data.results || [];
 
-		// Mostrar/Ocultar contador
-		if (results.length > 0 && statsContainer && countElement) {
-			countElement.innerText = results.length;
-			statsContainer.classList.remove("hidden");
-		} else {
-			if (statsContainer) statsContainer.classList.add("hidden");
-		}
+    // Mostrar/Ocultar contador
+    if (results.length > 0 && statsContainer && countElement) {
+      countElement.innerText = results.length;
+      statsContainer.classList.remove("hidden");
+    } else {
+      if (statsContainer) statsContainer.classList.add("hidden");
+    }
 
-		if (results.length === 0) {
-			searchResults.innerHTML = `
+    if (results.length === 0) {
+      searchResults.innerHTML = `
         <div class="text-center mt-20 px-6">
           <p class="text-gray-400 text-lg mb-2">Sin resultados</p>
           <p class="text-gray-600 text-sm italic">No se encontraron versículos para esta búsqueda.</p>
         </div>`;
-			return;
-		}
+      return;
+    }
 
-		searchResults.innerHTML = results
-			.map((item) => {
-				const b = item.book || item.book_name || "Libro";
-				const c = item.chapter || 0;
-				const v = item.verse || 0;
-				const t = item.text || item.verse_text || item.content || "Sin contenido";
-				const href = `/?version=${currentVersion}&book=${b.toLowerCase()}&chapter=${c}#v${v}`;
+    searchResults.innerHTML = results
+      .map((item) => {
+        const b = item.book || item.book_name || "Libro";
+        const c = item.chapter || 0;
+        const v = item.verse || 0;
+        const t = item.text || item.verse_text || item.content || "Sin contenido";
+        const href = `/?version=${currentVersion}&book=${b.toLowerCase()}&chapter=${c}#v${v}`;
 
-				return `
+        return `
         <a href="${href}" class="block p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-blue-500/30 transition-all active:scale-[0.98] group">
           <div class="flex items-center justify-between mb-2">
             <span class="text-blue-400 text-[12px] font-bold uppercase tracking-[0.1em]">${b} ${c}:${v}</span>
           </div>
           <p class="text-gray-300 text-[18px] leading-relaxed font-serif opacity-80 group-hover:opacity-100">${t}</p>
         </a>`;
-			})
-			.join("");
-	}
+      })
+      .join("");
+  }
 
-	searchInput?.addEventListener("input", (e) => {
-		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(() => performSearch(e.target.value), 400);
-	});
+  searchInput?.addEventListener("input", (e) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => performSearch(e.target.value), 400);
+  });
 
-	// --- CORRECCIÓN EN ESC ---
-	document.addEventListener("keydown", (e) => {
-		if (e.key === "Escape" && !searchOverlay.classList.contains("hidden")) {
-			resetSearch(); // Limpia todo
-			searchOverlay.classList.add("hidden"); // Cierra
-		}
-	});
+  // --- CORRECCIÓN EN ESC ---
+  // document.addEventListener("keydown", (e) => {
+  // 	if (e.key === "Escape" && !searchOverlay.classList.contains("hidden")) {
+  // 		resetSearch(); // Limpia todo
+  // 		searchOverlay.classList.add("hidden"); // Cierra
+  // 	}
+  // });
 
-	// --- CORRECCIÓN EN BOTÓN CERRAR ---
-	closeBtn?.addEventListener("click", () => {
-		resetSearch(); // Limpia todo
-		searchOverlay.classList.add("hidden"); // Cierra siempre
-	});
+  // --- CORRECCIÓN EN BOTÓN CERRAR ---
+  // closeBtn?.addEventListener("click", () => {
+  // 	resetSearch(); // Limpia todo
+  // 	searchOverlay.classList.add("hidden"); // Cierra siempre
+  // });
 </script>

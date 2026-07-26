@@ -12,13 +12,13 @@ export const Events = {
 
   OPEN_COMPARE: "logos:open-compare",
   CLOSE_COMPARE: "logos:close-compare",
-} as const;
+};
 
 /**
  * Ejecuta una función cuando la aplicación
  * termina de inicializarse.
  */
-export function onLogosInit(callback: () => void): void {
+export function onLogosInit(callback) {
   callback();
   document.addEventListener("logos:init", callback);
 }
@@ -26,7 +26,7 @@ export function onLogosInit(callback: () => void): void {
 /**
  * Emitir un evento personalizado.
  */
-export function emit(eventName: string): void {
+export function emit(eventName) {
   document.dispatchEvent(new Event(eventName));
 }
 
@@ -34,7 +34,7 @@ export function emit(eventName: string): void {
  * Escuchar un evento personalizado.
  * Devuelve una función para cancelar la suscripción.
  */
-export function on(eventName: string, callback: EventListener): () => void {
+export function on(eventName, callback) {
   document.addEventListener(eventName, callback);
 
   return () => {

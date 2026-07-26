@@ -1,6 +1,13 @@
-import { byId } from "../lib/ui";
-import { emit, Events } from "../lib/events";
+import { byId } from "../../lib/ui";
+import { emit, Events } from "../../lib/events";
 
+/**
+ * Inicializa los eventos del encabezado.
+ *
+ * Responsabilidades:
+ * - Abrir BibleNavigator.
+ * - Abrir SearchModal.
+ */
 export function initHeader() {
   console.log("Header inicializado");
 
@@ -10,7 +17,7 @@ export function initHeader() {
   if (btnOpenBibleNavigator) {
     btnOpenBibleNavigator.addEventListener("click", () => {
       console.log("Click Header");
-      
+
       emit(Events.OPEN_BIBLE_NAVIGATOR);
     });
   }

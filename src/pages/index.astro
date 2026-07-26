@@ -6,7 +6,7 @@ import Header from "../components/Header.astro";
 import SplashScreen from "../components/SplashScreen.astro";
 import BibleNavigator from "../components/BibleNavigator.astro";
 import Pagination from "../components/Pagination.astro";
-import { BIBLE_CHAPTERS } from "../utils/bible_chapters.ts";
+import { BIBLE_CHAPTERS } from "../utils/bible_chapters";
 
 const url = new URL(Astro.request.url);
 // Aseguramos que los valores sean minúsculas para la API
@@ -32,96 +32,91 @@ let verses = [];
 let errorMsg = "";
 
 try {
-	const apiUrl = `https://logosapi.onrender.com/read/${version}/${book}/${chapter}`;
-	console.log("Pidiendo texto a:", apiUrl);
+  const apiUrl = `https://logosapi.onrender.com/read/${version}/${book}/${chapter}`;
+  console.log("Pidiendo texto a:", apiUrl);
 
-	const response = await fetch(apiUrl);
+  const response = await fetch(apiUrl);
 
-	if (!response.ok) {
-		errorMsg = `Error ${response.status}: No se encontró el contenido.`;
-	} else {
-		const data = await response.json();
+  if (!response.ok) {
+    errorMsg = `Error ${response.status}: No se encontró el contenido.`;
+  } else {
+    const data = await response.json();
 
-		// REVISIÓN DE ESTRUCTURA:
-		// Tu API puede devolver los versículos en 'results', 'verses' o directo en la raíz
-		verses = data.results || data.verses || (Array.isArray(data) ? data : []);
+    // REVISIÓN DE ESTRUCTURA:
+    // Tu API puede devolver los versículos en 'results', 'verses' o directo en la raíz
+    verses = data.results || data.verses || (Array.isArray(data) ? data : []);
 
-		if (verses.length === 0) {
-			console.log("JSON recibido pero vacío:", data);
-		}
-	}
+    if (verses.length === 0) {
+      console.log("JSON recibido pero vacío:", data);
+    }
+  }
 } catch (e) {
-	errorMsg = "Error de conexión. Revisa si la API en Render está activa.";
+  errorMsg = "Error de conexión. Revisa si la API en Render está activa.";
 }
 ---
 
 <Layout title={`LogosApp | ${book} ${chapter}`}>
-	<!-- Splash screen LogosAPP -->
-	<SplashScreen />
+  <!-- Splash screen LogosAPP -->
+  <SplashScreen />
 
-	<!-- Selector overlay -->
-	<BibleNavigator version={version} book={book} chapter={chapter} />
+  <!-- Selector overlay -->
+  <BibleNavigator version={version} book={book} chapter={chapter} />
 
-	<!-- Header -->
-	<Header version={version} book={capitalizedBook} chapter={chapter} />
+  <!-- Header -->
+  <Header version={version} book={capitalizedBook} chapter={chapter} />
 
-	<!-- Main content -->
-	<main class="max-w-screen-md mx-auto px-3 md:px-6 py-5">
-		{
-			errorMsg && (
-				<div class="p-4 mb-6 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-center">
-					{errorMsg}
-				</div>
-			)
-		}
+  <!-- Main content -->
+  <main class="max-w-screen-md mx-auto px-3 md:px-6 py-5">
+    {
+      errorMsg && (
+        <div class="p-4 mb-6 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-center">
+          {errorMsg}
+        </div>
+      )
+    }
 
-		<!-- Bible text -->
-		<article
-			class="bible-text text-xl md:text-2xl font-serif leading-tight md:leading-relaxed text-gray-200 space-y-4"
-		>
-			{
-				verses.map((v: any) => (
-					<div
-						id={`v${v.verse}`}
-						class="verse-paragraph block group transition-all p-1 -mx-1 rounded-lg hover:bg-white/[0.02]"
-					>
-						<button
-							onclick={`openCompare('${book}', ${chapter}, ${v.verse})`}
-							class="inline-block mr-2 text-blue-500/60 font-bold hover:text-blue-400 transition-colors cursor-pointer font-sans text-[1em] align-baseline border-b border-transparent hover:border-blue-400/30"
-						>
-							{v.verse}
-						</button>
+    <!-- Bible text -->
+    <article
+      class="bible-text text-xl md:text-2xl font-serif leading-tight md:leading-relaxed text-gray-200 space-y-4"
+    >
+      {
+        verses.map((v: any) => (
+          <div
+            id={`v${v.verse}`}
+            class="verse-paragraph block group transition-all p-1 -mx-1 rounded-lg hover:bg-white/[0.02]"
+          >
+            <button
+              onclick={`openCompare('${book}', ${chapter}, ${v.verse})`}
+              class="inline-block mr-2 text-blue-500/60 font-bold hover:text-blue-400 transition-colors cursor-pointer font-sans text-[1em] align-baseline border-b border-transparent hover:border-blue-400/30"
+            >
+              {v.verse}
+            </button>
 
-						<span class="text-gray-300 selection:bg-blue-500/30">{v.text}</span>
-					</div>
-				))
-			}
-		</article>
+            <span class="text-gray-300 selection:bg-blue-500/30">{v.text}</span>
+          </div>
+        ))
+      }
+    </article>
 
-		<!-- Paginación integrada al final del texto -->
-		<Pagination
-			version={version}
-			book={book}
-			prevChapter={prevChapter}
-			nextChapter={nextChapter}
-		/>
+    <!-- Paginación integrada al final del texto -->
+    <Pagination version={version} book={book} prevChapter={prevChapter} nextChapter={nextChapter} />
 
-		<!-- Search modal -->
-		<SearchModal currentVersion={version} />
+    <!-- Search modal -->
+    <SearchModal currentVersion={version} />
 
-		<!-- Comparison Modal -->
-		<CompareModal />
-	</main>
+    <!-- Comparison Modal -->
+    <CompareModal />
+  </main>
 
-	<script>
-		// Inicializa la aplicación y dispara el evento "logos:init" para ocultar el splash screen
-		function initApp() {
-			document.dispatchEvent(new Event("logos:init"));
-		}
+  <script>
+    // Inicializa la aplicación y dispara el evento "logos:init" para ocultar el splash screen
+    function initApp() {
+      document.dispatchEvent(new Event("logos:init"));
+    }
 
-		initApp();
+    initApp();
 
-		// Asegura que la inicialización se ejecute después de cada swap de Astro (cuando se navega a otra página)
-		document.addEventListener("astro:after-swap", initApp);
-	</script>
+    // Asegura que la inicialización se ejecute después de cada swap de Astro (cuando se navega a otra página)
+    document.addEventListener("astro:after-swap", initApp);
+  </script>
 </Layout>
