@@ -64,27 +64,3 @@ const { version, book, chapter } = Astro.props;
     </button>
   </div>
 </header>
-
-<script type="module">
-  import { emit, Events, onLogosInit } from "../lib/events";
-  import { byId } from "../lib/ui";
-
-  function initHeader() {
-    const btnOpenBibleNavigator = byId("btn-open-bible-navigator");
-    const btnOpenSearch = byId("btn-open-search");
-
-    if (btnOpenBibleNavigator) {
-      btnOpenBibleNavigator.onclick = () => {
-        emit(Events.OPEN_BIBLE_NAVIGATOR);
-      };
-    }
-
-    if (btnOpenSearch) {
-      btnOpenSearch.onclick = () => {
-        emit(Events.OPEN_SEARCH);
-      };
-    }
-  }
-
-  onLogosInit(initHeader);
-</script>
