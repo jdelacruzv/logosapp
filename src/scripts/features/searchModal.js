@@ -1,5 +1,6 @@
 import { byId, show, hide } from "../../lib/ui.js";
 import { Events, on, emit } from "../../lib/events.js";
+import { searchBible } from "../../services/bibleApi.js";
 
 let debounceTimer = null;
 
@@ -66,10 +67,10 @@ export function initSearchModal() {
 
       if (searchResults) {
         searchResults.innerHTML = `
-					<p class="text-gray-500 text-center mt-10 text-sm italic">
-						Escribe al menos 3 letras...
-					</p>
-				`;
+          <p class="text-gray-500 text-center mt-10 text-sm italic">
+            Escribe al menos 3 letras...
+          </p>
+        `;
       }
 
       return;
@@ -78,26 +79,18 @@ export function initSearchModal() {
     show(loading);
 
     try {
-      const response = await fetch(
-        `https://logosapi.onrender.com/search/${version}?q=${encodeURIComponent(cleanQuery)}`
-      );
+      const results = await searchBible(version, cleanQuery);
 
-      if (!response.ok) {
-        throw new Error("Error en la respuesta de la API");
-      }
-
-      const data = await response.json();
-
-      renderResults(data);
+      renderResults(results);
     } catch (error) {
-      console.error("Error en búsqueda:", error);
+      console.error("Error en la búsqueda:", error);
 
       if (searchResults) {
         searchResults.innerHTML = `
-					<p class="text-red-400 text-center mt-10 text-sm">
-						Error al conectar con el servidor.
-					</p>
-				`;
+          <p class="text-red-400 text-center mt-10 text-sm">
+            Error al conectar con el servidor.
+          </p>
+        `;
       }
 
       hide(statsContainer);
