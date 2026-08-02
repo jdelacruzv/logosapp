@@ -1,5 +1,5 @@
-import { byId, show, hide } from "../../lib/ui";
-import { Events, on } from "../../lib/events";
+import { byId, show, hide } from "../../lib/ui.js";
+import { Events, on } from "../../lib/events.js";
 
 /**
  * Inicializa el navegador bíblico.

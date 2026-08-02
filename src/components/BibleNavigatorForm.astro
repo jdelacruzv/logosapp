@@ -1,217 +1,187 @@
 ---
-const {
-	currentVersion = "rv1960",
-	currentBook = "genesis",
-	currentChapter = "1",
-} = Astro.props;
+const { currentVersion = "rv1960", currentBook = "genesis", currentChapter = "1" } = Astro.props;
 ---
 
 <div
-	id="bible-selector-container"
-	data-version={currentVersion}
-	data-book={currentBook}
-	class="flex flex-col gap-4 p-6 bg-[#1a1a1a] rounded-t-3xl shadow-2xl border-t border-white/10"
+  id="bible-selector-container"
+  data-version={currentVersion}
+  data-book={currentBook}
+  data-chapter={currentChapter}
+  class="flex flex-col gap-4 p-6 bg-[#1a1a1a] rounded-t-3xl shadow-2xl border-t border-white/10"
 >
-	<div class="flex justify-between items-center mb-2">
-		<h2 class="text-xl font-bold text-white">Navegación</h2>
-		<button
-			id="close-selector-btn"
-			class="p-2 text-gray-400 hover:bg-white/5 rounded-full">✕</button
-		>
-	</div>
+  <div class="flex justify-between items-center mb-2">
+    <h2 class="text-xl font-bold text-white">Navegación</h2>
+    <button id="close-selector-btn" class="p-2 text-gray-400 hover:bg-white/5 rounded-full"
+      >✕</button
+    >
+  </div>
 
-	<div class="flex flex-col gap-4">
-		<div class="flex flex-col gap-1">
-			<label class="text-[10px] font-bold uppercase opacity-50 text-white ml-1"
-				>Versión</label
-			>
-			<select
-				id="version-select"
-				class="w-full p-4 rounded-xl bg-[#2a2a2a] text-white outline-none border-2 border-transparent focus:border-blue-500 appearance-none"
-			>
-				<option value={currentVersion}>{currentVersion.toUpperCase()}</option>
-			</select>
-		</div>
-	</div>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <label class="text-[10px] font-bold uppercase opacity-50 text-white ml-1">Versión</label>
+      <select
+        id="version-select"
+        class="w-full p-4 rounded-xl bg-[#2a2a2a] text-white outline-none border-2 border-transparent focus:border-blue-500 appearance-none"
+      >
+        <option value={currentVersion}>{currentVersion.toUpperCase()}</option>
+      </select>
+    </div>
+  </div>
 
-	<div class="flex flex-col gap-1">
-		<label class="text-[10px] font-bold uppercase opacity-50 text-white ml-1"
-			>Libro</label
-		>
-		<select
-			id="book-select"
-			class="w-full p-4 rounded-xl bg-[#2a2a2a] text-white outline-none border-2 border-transparent focus:border-blue-500 appearance-none"
-		>
-			<option value={currentBook}>{currentBook}</option>
-		</select>
-	</div>
+  <div class="flex flex-col gap-1">
+    <label class="text-[10px] font-bold uppercase opacity-50 text-white ml-1">Libro</label>
+    <select
+      id="book-select"
+      class="w-full p-4 rounded-xl bg-[#2a2a2a] text-white outline-none border-2 border-transparent focus:border-blue-500 appearance-none"
+    >
+      <option value={currentBook}>{currentBook}</option>
+    </select>
+  </div>
 
-	<div class="flex gap-3 mt-2">
-		<!-- Contenedor de Capítulo al 50% -->
-		<div class="w-1/2">
-			<label class="text-[10px] font-bold uppercase opacity-50 text-white ml-1">
-				Capítulo
-			</label>
-			<input
-				type="number"
-				id="chapter-input"
-				value={currentChapter}
-				min="1"
-				class="w-full h-[58px] p-4 rounded-xl bg-[#2a2a2a] text-white outline-none border-2 border-transparent focus:border-blue-500"
-			/>
-		</div>
+  <div class="flex gap-3 mt-2">
+    <!-- Contenedor de Capítulo al 50% -->
+    <div class="w-1/2">
+      <label class="text-[10px] font-bold uppercase opacity-50 text-white ml-1"> Capítulo </label>
+      <input
+        type="number"
+        id="chapter-input"
+        value={currentChapter}
+        min="1"
+        class="w-full h-[58px] p-4 rounded-xl bg-[#2a2a2a] text-white outline-none border-2 border-transparent focus:border-blue-500"
+      />
+    </div>
 
-		<!-- Botón Leer al 50% con cursor pointer -->
-		<div class="w-1/2 flex items-end">
-			<button
-				id="go-btn"
-				class="w-full h-[58px] bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 active:scale-95 transition-all cursor-pointer"
-			>
-				LEER
-			</button>
-		</div>
-	</div>
+    <!-- Botón Leer al 50% con cursor pointer -->
+    <div class="w-1/2 flex items-end">
+      <button
+        id="go-btn"
+        class="w-full h-[58px] bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 active:scale-95 transition-all cursor-pointer"
+      >
+        LEER
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
-	// Importamos la constante directamente en el script del cliente
-	import { BIBLE_CHAPTERS } from "../utils/bible_chapters.ts";
+  // Importamos la constante directamente en el script del cliente
+  import { BIBLE_CHAPTERS } from "../utils/bible_chapters.js";
 
-	// Recuperamos las variables del servidor mediante los atributos de datos del contenedor HTML
-	const container = document.getElementById("bible-selector-container");
-	const currentVersion = container?.dataset.version || "rv1960";
-	const currentBook = container?.dataset.book || "genesis";
+  // Recuperamos las variables del servidor mediante los atributos de datos del contenedor HTML
+  const container = document.getElementById("bible-selector-container");
+  const currentVersion = container?.dataset.version || "rv1960";
+  const currentBook = container?.dataset.book || "genesis";
 
-	const closeBtn = document.getElementById("close-selector-btn");
-	const selectorOverlay = document.getElementById("selector-overlay");
+  const closeBtn = document.getElementById("close-selector-btn");
+  const selectorOverlay = document.getElementById("selector-overlay");
 
-	async function loadData() {
-		const vSelect = document.getElementById("version-select");
-		const bSelect = document.getElementById("book-select");
+  async function loadData() {
+    const vSelect = document.getElementById("version-select");
+    const bSelect = document.getElementById("book-select");
 
-		// 1. CARGA DE VERSIONES
-		try {
-			const resV = await fetch("https://logosapi.onrender.com/info/versions");
-			if (resV.ok) {
-				const versions = await resV.json();
-				if (vSelect && Array.isArray(versions)) {
-					vSelect.innerHTML = versions
-						.filter((v) => v != null)
-						.map((v) => {
-							const val =
-								typeof v === "object"
-									? v.table || v.name || Object.values(v)[0]
-									: String(v);
-							const isSelected =
-								String(val).toLowerCase() === String(currentVersion).toLowerCase()
-									? "selected"
-									: "";
-							return `<option value="${val}" ${isSelected}>${String(val).toUpperCase()}</option>`;
-						})
-						.join("");
-				}
-			}
-		} catch (e) {
-			console.error("Error en versiones:", e);
-		}
+    // 1. CARGA DE VERSIONES
+    try {
+      const resV = await fetch("https://logosapi.onrender.com/info/versions");
+      if (resV.ok) {
+        const versions = await resV.json();
+        if (vSelect && Array.isArray(versions)) {
+          vSelect.innerHTML = versions
+            .filter((v) => v != null)
+            .map((v) => {
+              const val =
+                typeof v === "object" ? v.table || v.name || Object.values(v)[0] : String(v);
+              const isSelected =
+                String(val).toLowerCase() === String(currentVersion).toLowerCase()
+                  ? "selected"
+                  : "";
+              return `<option value="${val}" ${isSelected}>${String(val).toUpperCase()}</option>`;
+            })
+            .join("");
+        }
+      }
+    } catch (e) {
+      console.error("Error en versiones:", e);
+    }
 
-		// 2. CARGA DE LIBROS
-		try {
-			const resB = await fetch(
-				`https://logosapi.onrender.com/info/${currentVersion}/books`,
-			);
-			if (resB.ok) {
-				const dataB = await resB.json();
-				const books = dataB.books || [];
-				if (bSelect && Array.isArray(books)) {
-					bSelect.innerHTML = books
-						.filter((b) => b != null)
-						.map((b) => {
-							const bName = String(b);
-							const isSelected =
-								bName.toLowerCase() === String(currentBook).toLowerCase()
-									? "selected"
-									: "";
-							return `<option value="${bName.toLowerCase()}" ${isSelected}>${bName}</option>`;
-						})
-						.join("");
-				}
-			}
-		} catch (e) {
-			console.error("Error en libros:", e);
-		}
-	}
+    // 2. CARGA DE LIBROS
+    try {
+      const resB = await fetch(`https://logosapi.onrender.com/info/${currentVersion}/books`);
+      if (resB.ok) {
+        const dataB = await resB.json();
+        const books = dataB.books || [];
+        if (bSelect && Array.isArray(books)) {
+          bSelect.innerHTML = books
+            .filter((b) => b != null)
+            .map((b) => {
+              const bName = String(b);
+              const isSelected =
+                bName.toLowerCase() === String(currentBook).toLowerCase() ? "selected" : "";
+              return `<option value="${bName.toLowerCase()}" ${isSelected}>${bName}</option>`;
+            })
+            .join("");
+        }
+      }
+    } catch (e) {
+      console.error("Error en libros:", e);
+    }
+  }
 
-	// Ejecutar carga de datos
-	loadData();
+  // Ejecutar carga de datos
+  loadData();
 
-	// FUNCIÓN DE VALIDACIÓN DE CAPÍTULO
-	function validateChapterLimit() {
-		const bSelect = document.getElementById(
-			"book-select",
-		) as HTMLSelectElement | null;
-		const cInput = document.getElementById(
-			"chapter-input",
-		) as HTMLInputElement | null;
+  // FUNCIÓN DE VALIDACIÓN DE CAPÍTULO
+  function validateChapterLimit() {
+    const bSelect = document.getElementById("book-select") as HTMLSelectElement | null;
+    const cInput = document.getElementById("chapter-input") as HTMLInputElement | null;
 
-		if (!bSelect || !cInput) return;
+    if (!bSelect || !cInput) return;
 
-		const selectedBook = bSelect.value.toLowerCase();
-		const maxChapters = BIBLE_CHAPTERS[selectedBook] || 50;
+    const selectedBook = bSelect.value.toLowerCase();
+    const maxChapters = Object.entries(BIBLE_CHAPTERS).find(([key]) => key === selectedBook)?.[1] || 50;
 
-		// Configurar dinámicamente el valor máximo del input nativo
-		cInput.setAttribute("max", maxChapters.toString());
+    // Configurar dinámicamente el valor máximo del input nativo
+    cInput.setAttribute("max", maxChapters.toString());
 
-		let val = parseInt(cInput.value, 10) || 1;
+    let val = parseInt(cInput.value, 10) || 1;
 
-		// Si el valor actual es mayor al máximo permitido para este libro, lo ajustamos
-		if (val > maxChapters) {
-			cInput.value = maxChapters.toString();
-		} else if (val < 1) {
-			cInput.value = "1";
-		}
-	}
+    // Si el valor actual es mayor al máximo permitido para este libro, lo ajustamos
+    if (val > maxChapters) {
+      cInput.value = maxChapters.toString();
+    } else if (val < 1) {
+      cInput.value = "1";
+    }
+  }
 
-	// Escuchar cambios de selección de libro para validar el capítulo actual de inmediato
-	document
-		.getElementById("book-select")
-		?.addEventListener("change", validateChapterLimit);
+  // Escuchar cambios de selección de libro para validar el capítulo actual de inmediato
+  document.getElementById("book-select")?.addEventListener("change", validateChapterLimit);
 
-	// Escuchar escrituras manuales en el input para forzar límites correctos en tiempo real
-	document
-		.getElementById("chapter-input")
-		?.addEventListener("input", validateChapterLimit);
-	document
-		.getElementById("chapter-input")
-		?.addEventListener("change", validateChapterLimit);
+  // Escuchar escrituras manuales en el input para forzar límites correctos en tiempo real
+  document.getElementById("chapter-input")?.addEventListener("input", validateChapterLimit);
+  document.getElementById("chapter-input")?.addEventListener("change", validateChapterLimit);
 
-	// Configurar eventos de navegación con validación final antes del redireccionamiento
-	document.getElementById("go-btn")?.addEventListener("click", () => {
-		const v = (
-			document.getElementById("version-select") as HTMLSelectElement | null
-		)?.value;
-		const b = (document.getElementById("book-select") as HTMLSelectElement | null)
-			?.value;
-		let c = (document.getElementById("chapter-input") as HTMLInputElement | null)
-			?.value;
+  // Configurar eventos de navegación con validación final antes del redireccionamiento
+  document.getElementById("go-btn")?.addEventListener("click", () => {
+    const v = (document.getElementById("version-select") as HTMLSelectElement | null)?.value;
+    const b = (document.getElementById("book-select") as HTMLSelectElement | null)?.value;
+    let c = (document.getElementById("chapter-input") as HTMLInputElement | null)?.value;
 
-		if (v && b && c) {
-			// Doble check de seguridad por si el usuario evadió el control del input
-			const selectedBook = b.toLowerCase();
-			const maxChapters = BIBLE_CHAPTERS[selectedBook] || 50;
-			let parsedChapter = parseInt(c, 10) || 1;
+    if (v && b && c) {
+      // Doble check de seguridad por si el usuario evadió el control del input
+      const selectedBook = b.toLowerCase();
+      const maxChapters = Object.entries(BIBLE_CHAPTERS).find(([key]) => key === selectedBook)?.[1] || 50;
+      let parsedChapter = parseInt(c, 10) || 1;
 
-			if (parsedChapter > maxChapters) {
-				parsedChapter = maxChapters;
-			} else if (parsedChapter < 1) {
-				parsedChapter = 1;
-			}
+      if (parsedChapter > maxChapters) {
+        parsedChapter = maxChapters;
+      } else if (parsedChapter < 1) {
+        parsedChapter = 1;
+      }
 
-			window.location.href = `/?version=${v}&book=${b}&chapter=${parsedChapter}`;
-		}
-	});
+      window.location.href = `/?version=${v}&book=${b}&chapter=${parsedChapter}`;
+    }
+  });
 
-	closeBtn?.addEventListener("click", () => {
-		selectorOverlay?.classList.add("hidden");
-	});
+  closeBtn?.addEventListener("click", () => {
+    selectorOverlay?.classList.add("hidden");
+  });
 </script>

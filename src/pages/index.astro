@@ -6,16 +6,21 @@ import Header from "../components/Header.astro";
 import SplashScreen from "../components/SplashScreen.astro";
 import BibleNavigator from "../components/BibleNavigator.astro";
 import Pagination from "../components/Pagination.astro";
-import { BIBLE_CHAPTERS } from "../utils/bible_chapters";
+import VerseList from "../components/VerseList.astro";
+
+import { BIBLE_CHAPTERS } from "../utils/bible_chapters.js";
+import { getChapter } from "../services/bibleApi.js";
 
 const url = new URL(Astro.request.url);
+
 // Aseguramos que los valores sean minúsculas para la API
 const version = (url.searchParams.get("version") || "rv1960").toLowerCase();
 const book = (url.searchParams.get("book") || "genesis").toLowerCase();
+
 const capitalizedBook = book.charAt(0).toUpperCase() + book.slice(1);
 
 // Obtenemos el total de capítulos del libro actual (por defecto 50 si no se encuentra en el mapa)
-const maxChapters = BIBLE_CHAPTERS[book] || 50;
+const maxChapters = Object.entries(BIBLE_CHAPTERS).find(([key]) => key === book)?.[1] || 50;
 
 // Forzamos la conversión a número y usamos un fallback de 1
 const chapterParam = url.searchParams.get("chapter") || "1";
@@ -25,32 +30,18 @@ const chapter = parseInt(chapterParam, 10) || 1;
 const prevChapter = chapter > 1 ? chapter - 1 : null;
 const nextChapter = chapter < maxChapters ? chapter + 1 : null;
 
-// Función para capitalizar el nombre del libro (ej: "genesis" -> "Génesis")
-const displayBook = book.charAt(0).toUpperCase() + book.slice(1);
-
+// Obtenemos los versículos del capítulo actual
 let verses = [];
 let errorMsg = "";
 
 try {
-  const apiUrl = `https://logosapi.onrender.com/read/${version}/${book}/${chapter}`;
-  console.log("Pidiendo texto a:", apiUrl);
+  verses = await getChapter(version, book, chapter);
 
-  const response = await fetch(apiUrl);
-
-  if (!response.ok) {
-    errorMsg = `Error ${response.status}: No se encontró el contenido.`;
-  } else {
-    const data = await response.json();
-
-    // REVISIÓN DE ESTRUCTURA:
-    // Tu API puede devolver los versículos en 'results', 'verses' o directo en la raíz
-    verses = data.results || data.verses || (Array.isArray(data) ? data : []);
-
-    if (verses.length === 0) {
-      console.log("JSON recibido pero vacío:", data);
-    }
+  if (verses.length === 0) {
+    console.log("El capítulo no contiene versículos.");
   }
-} catch (e) {
+} catch (error) {
+  console.error("Error al cargar el capítulo:", error);
   errorMsg = "Error de conexión. Revisa si la API en Render está activa.";
 }
 ---
@@ -76,27 +67,7 @@ try {
     }
 
     <!-- Bible text -->
-    <article
-      class="bible-text text-xl md:text-2xl font-serif leading-tight md:leading-relaxed text-gray-200 space-y-4"
-    >
-      {
-        verses.map((v: any) => (
-          <div
-            id={`v${v.verse}`}
-            class="verse-paragraph block group transition-all p-1 -mx-1 rounded-lg hover:bg-white/[0.02]"
-          >
-            <button
-              onclick={`openCompare('${book}', ${chapter}, ${v.verse})`}
-              class="inline-block mr-2 text-blue-500/60 font-bold hover:text-blue-400 transition-colors cursor-pointer font-sans text-[1em] align-baseline border-b border-transparent hover:border-blue-400/30"
-            >
-              {v.verse}
-            </button>
-
-            <span class="text-gray-300 selection:bg-blue-500/30">{v.text}</span>
-          </div>
-        ))
-      }
-    </article>
+    <VerseList verses={verses} book={book} chapter={chapter} />
 
     <!-- Paginación integrada al final del texto -->
     <Pagination version={version} book={book} prevChapter={prevChapter} nextChapter={nextChapter} />

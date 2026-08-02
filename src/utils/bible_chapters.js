@@ -1,5 +1,5 @@
 // Mapa estático oficial de capítulos de los 66 libros de la Biblia
-export const BIBLE_CHAPTERS: Record<string, number> = {
+export const BIBLE_CHAPTERS = {
 	genesis: 50,
 	exodo: 40,
 	levitico: 27,

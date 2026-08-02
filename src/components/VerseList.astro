@@ -1,0 +1,29 @@
+---
+import { normalizeVerses } from "../scripts/features/verseList.js";
+
+const { verses = [], book = "genesis", chapter = 1 } = Astro.props;
+
+const normalizedVerses = normalizeVerses(verses);
+---
+
+<article
+  class="bible-text text-xl md:text-2xl font-serif leading-tight md:leading-relaxed text-gray-200 space-y-4"
+>
+  {
+    normalizedVerses.map((item) => (
+      <div
+        id={`v${item.verse}`}
+        class="verse-paragraph block group transition-all p-1 -mx-1 rounded-lg hover:bg-white/[0.02]"
+      >
+        <button
+          onclick={`openCompare('${book}', ${chapter}, ${item.verse})`}
+          class="inline-block mr-2 text-blue-500/60 font-bold hover:text-blue-400 transition-colors cursor-pointer font-sans text-[1em] align-baseline border-b border-transparent hover:border-blue-400/30"
+        >
+          {item.verse}
+        </button>
+
+        <span class="text-gray-300 selection:bg-blue-500/30">{item.text}</span>
+      </div>
+    ))
+  }
+</article>
