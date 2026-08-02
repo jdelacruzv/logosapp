@@ -168,13 +168,15 @@ export function initSearchModal() {
   }
 
   // Búsqueda en tiempo real
-  searchInput.addEventListener("input", (event) => {
+  function handleSearchInput(event) {
     clearTimeout(debounceTimer);
 
     debounceTimer = setTimeout(() => {
       performSearch(event.target.value);
     }, 400);
-  });
+  }
+
+  searchInput.addEventListener("input", handleSearchInput);
 
   // Cerrar modal con el botón de cerrar
   closeBtn?.addEventListener("click", () => {
