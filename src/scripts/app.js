@@ -1,6 +1,6 @@
-import { initHeader } from "./features/header";
-import { initBibleNavigator } from "./features/bibleNavigator";
-import { initSearchModal } from "./features/searchModal";
+import { initHeader } from "./features/header.js";
+import { initBibleNavigator } from "./features/bibleNavigator.js";
+import { initSearchModal } from "./features/searchModal.js";
 
 /**
  * Inicialización de la aplicación
