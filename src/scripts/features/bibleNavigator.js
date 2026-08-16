@@ -22,6 +22,7 @@ export function initBibleNavigator() {
   }
 
   function closeNavigator() {
+    console.log("CLOSE_BIBLE_NAVIGATOR");
     hide(overlay);
   }
 

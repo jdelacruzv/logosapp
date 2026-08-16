@@ -11,8 +11,12 @@ const { currentVersion = "rv1960", currentBook = "genesis", currentChapter = "1"
 >
   <div class="flex justify-between items-center mb-2">
     <h2 class="text-xl font-bold text-white">Navegación</h2>
-    <button id="close-selector-btn" class="p-2 text-gray-400 hover:bg-white/5 rounded-full"
-      >✕</button
+    <button
+      id="close-selector-btn"
+      type="button"
+      class="p-2 text-gray-400 hover:bg-white/5 rounded-full">
+      ✕
+    </button
     >
   </div>
 
@@ -55,6 +59,7 @@ const { currentVersion = "rv1960", currentBook = "genesis", currentChapter = "1"
     <div class="w-1/2 flex items-end">
       <button
         id="go-btn"
+        type="button"
         class="w-full h-[58px] bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 active:scale-95 transition-all cursor-pointer"
       >
         LEER
@@ -62,127 +67,3 @@ const { currentVersion = "rv1960", currentBook = "genesis", currentChapter = "1"
     </div>
   </div>
 </div>
-
-<!-- <script>
-  // Importamos la constante directamente en el script del cliente
-  import { BIBLE_CHAPTERS } from "../utils/bible_chapters.js";
-
-  // Recuperamos las variables del servidor mediante los atributos de datos del contenedor HTML
-  const container = document.getElementById("bible-selector-container");
-  const currentVersion = container?.dataset.version || "rv1960";
-  const currentBook = container?.dataset.book || "genesis";
-
-  const closeBtn = document.getElementById("close-selector-btn");
-  const selectorOverlay = document.getElementById("selector-overlay");
-
-  async function loadData() {
-    const vSelect = document.getElementById("version-select");
-    const bSelect = document.getElementById("book-select");
-
-    // 1. CARGA DE VERSIONES
-    try {
-      const resV = await fetch("https://logosapi.onrender.com/info/versions");
-      if (resV.ok) {
-        const versions = await resV.json();
-        if (vSelect && Array.isArray(versions)) {
-          vSelect.innerHTML = versions
-            .filter((v) => v != null)
-            .map((v) => {
-              const val =
-                typeof v === "object" ? v.table || v.name || Object.values(v)[0] : String(v);
-              const isSelected =
-                String(val).toLowerCase() === String(currentVersion).toLowerCase()
-                  ? "selected"
-                  : "";
-              return `<option value="${val}" ${isSelected}>${String(val).toUpperCase()}</option>`;
-            })
-            .join("");
-        }
-      }
-    } catch (e) {
-      console.error("Error en versiones:", e);
-    }
-
-    // 2. CARGA DE LIBROS
-    try {
-      const resB = await fetch(`https://logosapi.onrender.com/info/${currentVersion}/books`);
-      if (resB.ok) {
-        const dataB = await resB.json();
-        const books = dataB.books || [];
-        if (bSelect && Array.isArray(books)) {
-          bSelect.innerHTML = books
-            .filter((b) => b != null)
-            .map((b) => {
-              const bName = String(b);
-              const isSelected =
-                bName.toLowerCase() === String(currentBook).toLowerCase() ? "selected" : "";
-              return `<option value="${bName.toLowerCase()}" ${isSelected}>${bName}</option>`;
-            })
-            .join("");
-        }
-      }
-    } catch (e) {
-      console.error("Error en libros:", e);
-    }
-  }
-
-  // Ejecutar carga de datos
-  loadData();
-
-  // FUNCIÓN DE VALIDACIÓN DE CAPÍTULO
-  function validateChapterLimit() {
-    const bSelect = document.getElementById("book-select") as HTMLSelectElement | null;
-    const cInput = document.getElementById("chapter-input") as HTMLInputElement | null;
-
-    if (!bSelect || !cInput) return;
-
-    const selectedBook = bSelect.value.toLowerCase();
-    const maxChapters = Object.entries(BIBLE_CHAPTERS).find(([key]) => key === selectedBook)?.[1] || 50;
-
-    // Configurar dinámicamente el valor máximo del input nativo
-    cInput.setAttribute("max", maxChapters.toString());
-
-    let val = parseInt(cInput.value, 10) || 1;
-
-    // Si el valor actual es mayor al máximo permitido para este libro, lo ajustamos
-    if (val > maxChapters) {
-      cInput.value = maxChapters.toString();
-    } else if (val < 1) {
-      cInput.value = "1";
-    }
-  }
-
-  // Escuchar cambios de selección de libro para validar el capítulo actual de inmediato
-  document.getElementById("book-select")?.addEventListener("change", validateChapterLimit);
-
-  // Escuchar escrituras manuales en el input para forzar límites correctos en tiempo real
-  document.getElementById("chapter-input")?.addEventListener("input", validateChapterLimit);
-  document.getElementById("chapter-input")?.addEventListener("change", validateChapterLimit);
-
-  // Configurar eventos de navegación con validación final antes del redireccionamiento
-  document.getElementById("go-btn")?.addEventListener("click", () => {
-    const v = (document.getElementById("version-select") as HTMLSelectElement | null)?.value;
-    const b = (document.getElementById("book-select") as HTMLSelectElement | null)?.value;
-    let c = (document.getElementById("chapter-input") as HTMLInputElement | null)?.value;
-
-    if (v && b && c) {
-      // Doble check de seguridad por si el usuario evadió el control del input
-      const selectedBook = b.toLowerCase();
-      const maxChapters = Object.entries(BIBLE_CHAPTERS).find(([key]) => key === selectedBook)?.[1] || 50;
-      let parsedChapter = parseInt(c, 10) || 1;
-
-      if (parsedChapter > maxChapters) {
-        parsedChapter = maxChapters;
-      } else if (parsedChapter < 1) {
-        parsedChapter = 1;
-      }
-
-      window.location.href = `/?version=${v}&book=${b}&chapter=${parsedChapter}`;
-    }
-  });
-
-  closeBtn?.addEventListener("click", () => {
-    selectorOverlay?.classList.add("hidden");
-  });
-</script> -->
-

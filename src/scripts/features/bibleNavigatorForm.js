@@ -1,4 +1,5 @@
 import { byId } from "../../lib/ui.js";
+import { emit, Events } from "../../lib/events.js";
 import { getBibleVersions, getBibleBooks } from "../../services/bibleApi.js";
 import { BIBLE_CHAPTERS } from "../../utils/bible_chapters.js";
 
@@ -145,11 +146,7 @@ export function initBibleNavigatorForm() {
   goButton?.addEventListener("click", goToChapter);
 
   closeButton?.addEventListener("click", () => {
-    const overlay = byId("overlay-bible-navigator");
-
-    if (overlay) {
-      overlay.classList.add("hidden");
-    }
+    emit(Events.CLOSE_BIBLE_NAVIGATOR);
   });
 
   loadVersions();
