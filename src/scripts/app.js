@@ -2,6 +2,7 @@ import { initHeader } from "./features/header.js";
 import { initBibleNavigator } from "./features/bibleNavigator.js";
 import { initBibleNavigatorForm } from "./features/bibleNavigatorForm.js";
 import { initSearchModal } from "./features/searchModal.js";
+import { initCompareModal } from "./features/compareModal.js";
 
 /**
  * Inicialización de la aplicación
@@ -22,6 +23,7 @@ function initApp() {
   initBibleNavigator();
   initBibleNavigatorForm();
   initSearchModal();
+  initCompareModal();
 }
 
 document.addEventListener("astro:page-load", initApp);

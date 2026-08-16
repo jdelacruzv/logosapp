@@ -16,7 +16,11 @@ const normalizedVerses = normalizeVerses(verses);
         class="verse-paragraph block group transition-all p-1 -mx-1 rounded-lg hover:bg-white/[0.02]"
       >
         <button
-          onclick={`openCompare('${book}', ${chapter}, ${item.verse})`}
+          type="button"
+          data-compare
+          data-book={book}
+          data-chapter={chapter}
+          data-verse={item.verse}
           class="inline-block mr-2 text-blue-500/60 font-bold hover:text-blue-400 transition-colors cursor-pointer font-sans text-[1em] align-baseline border-b border-transparent hover:border-blue-400/30"
         >
           {item.verse}

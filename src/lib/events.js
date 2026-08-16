@@ -25,9 +25,16 @@ export function onLogosInit(callback) {
 
 /**
  * Emitir un evento personalizado.
+ *
+ * @param {string} eventName
+ * @param {object} detail
  */
-export function emit(eventName) {
-  document.dispatchEvent(new Event(eventName));
+export function emit(eventName, detail = {}) {
+  document.dispatchEvent(
+    new CustomEvent(eventName, {
+      detail,
+    })
+  );
 }
 
 /**
