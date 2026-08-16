@@ -1,5 +1,5 @@
-import { byId } from "../../lib/ui";
-import { emit, Events } from "../../lib/events";
+import { byId } from "../../lib/ui.js";
+import { emit, Events } from "../../lib/events.js";
 
 /**
  * Inicializa los eventos del encabezado.
