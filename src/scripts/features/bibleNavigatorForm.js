@@ -1,6 +1,6 @@
-import { byId } from "../lib/ui.js";
-import { getBibleVersions, getBibleBooks } from "../services/bibleApi.js";
-import { BIBLE_CHAPTERS } from "../utils/bible_chapters.js";
+import { byId } from "../../lib/ui.js";
+import { getBibleVersions, getBibleBooks } from "../../services/bibleApi.js";
+import { BIBLE_CHAPTERS } from "../../utils/bible_chapters.js";
 
 /**
  * Inicializa el formulario de navegación bíblica.

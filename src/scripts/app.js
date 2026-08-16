@@ -1,5 +1,6 @@
 import { initHeader } from "./features/header.js";
 import { initBibleNavigator } from "./features/bibleNavigator.js";
+import { initBibleNavigatorForm } from "./features/bibleNavigatorForm.js";
 import { initSearchModal } from "./features/searchModal.js";
 
 /**
@@ -19,6 +20,7 @@ function initApp() {
 
   initHeader();
   initBibleNavigator();
+  initBibleNavigatorForm();
   initSearchModal();
 }
 
