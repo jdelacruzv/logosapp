@@ -47,6 +47,52 @@ try {
 ---
 
 <Layout title={`LogosApp | ${book} ${chapter}`}>
+  <!-- Restaurar y guardar última posición de lectura -->
+  <script>
+    import { getLastPosition, saveLastPosition } from "../lib/lastPosition.js";
+
+    function restoreLastPosition() {
+      const url = new URL(window.location.href);
+
+      const hasPosition =
+        url.searchParams.has("version") ||
+        url.searchParams.has("book") ||
+        url.searchParams.has("chapter");
+
+      // Si ya existe una posición en la URL,
+      // esa posición tiene prioridad y se guarda.
+      if (hasPosition) {
+        const version = url.searchParams.get("version");
+        const book = url.searchParams.get("book");
+        const chapter = url.searchParams.get("chapter");
+
+        if (version && book && chapter) {
+          saveLastPosition(version, book, chapter);
+        }
+
+        return;
+      }
+
+      // Si no hay posición en la URL,
+      // intentamos recuperar la última posición.
+      const lastPosition = getLastPosition();
+
+      if (!lastPosition) {
+        return;
+      }
+
+      const params = new URLSearchParams({
+        version: lastPosition.version,
+        book: lastPosition.book,
+        chapter: String(lastPosition.chapter),
+      });
+
+      window.location.replace(`/?${params.toString()}`);
+    }
+
+    restoreLastPosition();
+  </script>
+
   <!-- Splash screen LogosAPP -->
   <SplashScreen />
 
