@@ -135,6 +135,13 @@ export function initBibleNavigatorForm() {
 
   if (chapterInput) {
     chapterInput.value = currentChapter;
+
+    chapterInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        goToChapter();
+      }
+    });
   }
 
   bookSelect?.addEventListener("change", validateChapterLimit);
