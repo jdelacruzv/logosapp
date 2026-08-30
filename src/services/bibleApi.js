@@ -1,4 +1,5 @@
-const API_BASE_URL = "https://logosapi.onrender.com";
+// const API_BASE_URL = "https://logosapi.onrender.com";
+const API_BASE_URL = "https://logosapi.vercel.app";
 
 /**
  * Obtiene las versiones bíblicas disponibles.
