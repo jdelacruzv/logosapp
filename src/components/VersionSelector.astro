@@ -1,7 +1,7 @@
 ---
 let versions = [];
 try {
-	const res = await fetch("https://logosapi.onrender.com/info/versions");
+	const res = await fetch("https://logosapi.vercel.app/info/versions");
 	versions = await res.json();
 } catch (e) {
 	console.error("Error cargando versiones:", e);

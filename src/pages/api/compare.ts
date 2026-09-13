@@ -59,9 +59,9 @@ export const GET: APIRoute = async ({ url }) => {
 
 	try {
 		// El encodeURIComponent asegura que espacios y tildes viajen correctamente
-		const targetUrl = `https://logosapi.onrender.com/compare/${encodeURIComponent(bookNameFixed)}/${chapter}/${verse}`;
+		const targetUrl = `https://logosapi.vercel.app/compare/${encodeURIComponent(bookNameFixed)}/${chapter}/${verse}`;
 
-		console.log("🚀 Petición a Render:", targetUrl);
+		console.log("🚀 Petición a Vercel:", targetUrl);
 
 		const response = await fetch(targetUrl);
 

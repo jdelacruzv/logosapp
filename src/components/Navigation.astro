@@ -2,7 +2,7 @@
 import VersionSelector from "./VersionSelector.astro";
 const { version } = Astro.props;
 
-const res = await fetch(`https://logosapi.onrender.com/info/${version}/books`);
+const res = await fetch(`https://logosapi.vercel.app/info/${version}/books`);
 const data = await res.json();
 const books = data.books || [];
 ---
