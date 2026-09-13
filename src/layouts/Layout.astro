@@ -6,57 +6,88 @@ import "@fontsource/merriweather/400.css";
 import "@fontsource/merriweather/400-italic.css";
 
 interface Props {
-	title: string;
+  title: string;
 }
 
 const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es" class="dark">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="LogosApp - Lector Bíblico Minimalista" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
-		/>
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body class="bg-[#121212] text-[#E0E0E0] min-h-screen">
-		<slot />
-		<!-- Importación nativa de Astro/Vite -->
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="LogosApp - Lector Bíblico Minimalista" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen" style="background: var(--bg); color: var(--text);">
+    <slot />
+
     <script>
       import "../scripts/app.js";
+
+      const savedTheme = localStorage.getItem("theme");
+      const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const theme = savedTheme || (systemPrefersDark ? "dark" : "light");
+
+      document.documentElement.classList.toggle("theme-light", theme === "light");
+      document.documentElement.classList.toggle("theme-dark", theme === "dark");
     </script>
-	</body>
+  </body>
 </html>
 
 <style is:global>
-	:root {
-		--font-serif: "Merriweather", serif;
-		--font-sans: "Inter", sans-serif;
-	}
+  :root {
+    --font-serif: "Merriweather", serif;
+    --font-sans: "Inter", sans-serif;
+  }
 
-	html {
-		scroll-behavior: smooth;
-		/* Evita el scroll horizontal accidental en móviles */
-		overflow-x: hidden;
-		/* Color base para evitar destellos blancos */
-		background-color: #121212;
-	}
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    background-color: var(--bg);
+    color: var(--text);
+  }
 
-	body {
-		font-family: var(--font-sans);
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-	}
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-	/* Optimización para el texto bíblico */
-	.bible-text {
-		font-family: var(--font-serif);
-		line-height: 1.8;
-	}
+  .bible-text {
+    font-family: var(--font-serif);
+    line-height: 1.8;
+  }
 </style>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.getElementById("theme-toggle");
+  const sunIcon = document.getElementById("theme-icon-sun");
+  const moonIcon = document.getElementById("theme-icon-moon");
+
+  function applyTheme(theme) {
+    const isLight = theme === "light";
+
+    root.classList.toggle("theme-light", isLight);
+    root.classList.toggle("theme-dark", !isLight);
+    localStorage.setItem("theme", theme);
+
+    sunIcon?.classList.toggle("hidden", isLight);
+    moonIcon?.classList.toggle("hidden", !isLight);
+  }
+
+  const currentTheme = localStorage.getItem("theme") || "dark";
+  applyTheme(currentTheme);
+
+  toggle?.addEventListener("click", () => {
+    const nextTheme = root.classList.contains("theme-light") ? "dark" : "light";
+    applyTheme(nextTheme);
+  });
+</script>

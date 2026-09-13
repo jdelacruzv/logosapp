@@ -7,13 +7,15 @@ const normalizedVerses = normalizeVerses(verses);
 ---
 
 <article
-  class="bible-text text-xl md:text-2xl font-serif leading-tight md:leading-relaxed text-gray-200 space-y-4"
+  class="bible-text text-xl md:text-2xl font-serif leading-tight md:leading-relaxed space-y-4"
+  style="color: var(--text);"
 >
   {
     normalizedVerses.map((item) => (
       <div
         id={`v${item.verse}`}
-        class="verse-paragraph block group transition-all p-1 -mx-1 rounded-lg hover:bg-white/[0.02]"
+        class="verse-paragraph block group transition-all p-1 -mx-1 rounded-lg"
+        style="background: transparent;"
       >
         <button
           type="button"
@@ -21,12 +23,15 @@ const normalizedVerses = normalizeVerses(verses);
           data-book={book}
           data-chapter={chapter}
           data-verse={item.verse}
-          class="inline-block mr-2 text-blue-500/60 font-bold hover:text-blue-400 transition-colors cursor-pointer font-sans text-[1em] align-baseline border-b border-transparent hover:border-blue-400/30"
+          class="inline-block mr-2 font-bold transition-colors cursor-pointer font-sans text-[1em] align-baseline border-b border-transparent"
+          style="color: var(--accent);"
         >
           {item.verse}
         </button>
 
-        <span class="text-gray-300 selection:bg-blue-500/30">{item.text}</span>
+        <span class="selection:bg-blue-500/30" style="color: var(--text);">
+          {item.text}
+        </span>
       </div>
     ))
   }
