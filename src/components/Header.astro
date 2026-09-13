@@ -16,7 +16,7 @@ const { version, book, chapter } = Astro.props;
     >
       <!-- CONTENEDOR DE LA VERSIÓN -->
       <span
-        class="text-[14px] sm:text-xs font-bold tracking-widest text-blue-400 uppercase leading-none"
+        class="text-[16px] sm:text-xs font-bold tracking-widest text-blue-400 uppercase leading-none"
       >
         {version}
       </span>
@@ -27,12 +27,12 @@ const { version, book, chapter } = Astro.props;
       <!-- CONTENEDOR DE LIBRO + CAPÍTULO -->
       <div class="flex items-center gap-1 sm:gap-3 leading-none">
         <span
-          class="text-[10px] sm:text-xs font-bold tracking-widest text-white/60 uppercase group-hover:text-white transition-colors"
+          class="text-[12px] sm:text-xs font-bold tracking-widest text-white/60 uppercase group-hover:text-white transition-colors"
         >
           {book}
         </span>
         <span class="text-gray-600 font-light">|</span>
-        <span class="text-[10px] sm:text-xs font-bold tracking-widest text-white/60 uppercase">
+        <span class="text-[12px] sm:text-xs font-bold tracking-widest text-white/60 uppercase">
           Capítulo {chapter}
         </span>
         <span
