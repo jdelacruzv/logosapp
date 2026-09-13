@@ -67,12 +67,14 @@ const { title } = Astro.props;
 </style>
 
 <script>
+  type Theme = "light" | "dark";
+
   const root = document.documentElement;
   const toggle = document.getElementById("theme-toggle");
   const sunIcon = document.getElementById("theme-icon-sun");
   const moonIcon = document.getElementById("theme-icon-moon");
 
-  function applyTheme(theme) {
+  function applyTheme(theme: Theme) {
     const isLight = theme === "light";
 
     root.classList.toggle("theme-light", isLight);
@@ -83,11 +85,13 @@ const { title } = Astro.props;
     moonIcon?.classList.toggle("hidden", !isLight);
   }
 
-  const currentTheme = localStorage.getItem("theme") || "dark";
+  const savedTheme = localStorage.getItem("theme");
+  const currentTheme: Theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+
   applyTheme(currentTheme);
 
   toggle?.addEventListener("click", () => {
-    const nextTheme = root.classList.contains("theme-light") ? "dark" : "light";
+    const nextTheme: Theme = root.classList.contains("theme-light") ? "dark" : "light";
     applyTheme(nextTheme);
   });
 </script>
