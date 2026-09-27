@@ -50,7 +50,14 @@ try {
   }
 } catch (error) {
   console.error("Error al cargar el capítulo:", error);
-  errorMsg = "Error de conexión. Revisa si la API está activa.";
+
+  const message = error instanceof Error ? error.message : String(error ?? "");
+
+  if (message.includes("404") || message.includes("500")) {
+    errorMsg = "Este capítulo no está disponible en esta versión de la Biblia.";
+  } else {
+    errorMsg = "Hubo un problema al cargar el contenido. Inténtalo nuevamente.";
+  }
 }
 ---
 
