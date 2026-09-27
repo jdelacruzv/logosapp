@@ -8,23 +8,31 @@ import BibleNavigator from "../components/BibleNavigator.astro";
 import Pagination from "../components/Pagination.astro";
 import VerseList from "../components/VerseList.astro";
 
-import { BIBLE_CHAPTERS } from "../utils/bible_chapters.js";
+import { formatBookNameForApi, getBookChapterCount } from "../utils/bible_chapters.js";
 import { getChapter } from "../services/bibleApi.js";
 
 const url = new URL(Astro.request.url);
 
-// Aseguramos que los valores sean minúsculas para la API
+// Normalizamos el nombre del libro para usar el identificador esperado por la API.
 const version = (url.searchParams.get("version") || "rv1960").toLowerCase();
-const book = (url.searchParams.get("book") || "genesis").toLowerCase();
+const bookName = url.searchParams.get("book") || "genesis";
+const book = bookName.toLowerCase();
+const apiBook = formatBookNameForApi(book);
 
-const capitalizedBook = book.charAt(0).toUpperCase() + book.slice(1);
+const capitalizedBook = bookName.charAt(0).toUpperCase() + bookName.slice(1);
 
-// Obtenemos el total de capítulos del libro actual (por defecto 50 si no se encuentra en el mapa)
-const maxChapters = Object.entries(BIBLE_CHAPTERS).find(([key]) => key === book)?.[1] || 50;
+const maxChapters = getBookChapterCount(book);
 
-// Forzamos la conversión a número y usamos un fallback de 1
+// Validamos también los capítulos recibidos directamente por la URL.
 const chapterParam = url.searchParams.get("chapter") || "1";
-const chapter = parseInt(chapterParam, 10) || 1;
+const requestedChapter = Number(chapterParam);
+const validChapter = Number.isInteger(requestedChapter) ? requestedChapter : 1;
+const chapter = Math.min(Math.max(validChapter, 1), maxChapters);
+
+if (chapterParam !== String(chapter)) {
+  url.searchParams.set("chapter", String(chapter));
+  return Astro.redirect(`${url.pathname}${url.search}`, 302);
+}
 
 // Ahora chapter es de tipo 'number', y las operaciones funcionarán:
 const prevChapter = chapter > 1 ? chapter - 1 : null;
@@ -35,14 +43,14 @@ let verses = [];
 let errorMsg = "";
 
 try {
-  verses = await getChapter(version, book, chapter);
+  verses = await getChapter(version, apiBook, chapter);
 
   if (verses.length === 0) {
     console.log("El capítulo no contiene versículos.");
   }
 } catch (error) {
   console.error("Error al cargar el capítulo:", error);
-  errorMsg = "Error de conexión. Revisa si la API en Render está activa.";
+  errorMsg = "Error de conexión. Revisa si la API está activa.";
 }
 ---
 
@@ -97,7 +105,7 @@ try {
   <SplashScreen />
 
   <!-- Selector overlay -->
-  <BibleNavigator version={version} book={book} chapter={chapter} />
+  <BibleNavigator version={version} book={bookName} chapter={chapter} />
 
   <!-- Header -->
   <Header version={version} book={capitalizedBook} chapter={chapter} />

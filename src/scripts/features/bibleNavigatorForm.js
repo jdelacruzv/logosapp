@@ -1,7 +1,7 @@
-import { byId } from "../../lib/ui.js";
 import { emit, Events } from "../../lib/events.js";
-import { getBibleVersions, getBibleBooks } from "../../services/bibleApi.js";
-import { BIBLE_CHAPTERS } from "../../utils/bible_chapters.js";
+import { byId } from "../../lib/ui.js";
+import { getBibleBooks, getBibleVersions } from "../../services/bibleApi.js";
+import { getBookChapterCount, normalizeBookName } from "../../utils/bible_chapters.js";
 
 /**
  * Inicializa el formulario de navegación bíblica.
@@ -56,35 +56,43 @@ export function initBibleNavigatorForm() {
     }
   }
 
-  async function loadBooks() {
+  async function loadBooks(version = currentVersion) {
     try {
-      const books = await getBibleBooks(currentVersion);
+      const books = await getBibleBooks(version);
 
       if (!bookSelect) {
         return;
       }
 
-      bookSelect.innerHTML = books
-        .filter((book) => book != null)
-        .map((book) => {
-          const bookName = String(book);
+      const availableBooks = books.filter((book) => book != null).map(String);
+      const preferredBook = bookSelect.value || currentBook;
+      const selectedBook =
+        availableBooks.find(
+          (book) => normalizeBookName(book) === normalizeBookName(preferredBook)
+        ) || availableBooks[0];
 
-          const selected = bookName.toLowerCase() === currentBook.toLowerCase() ? "selected" : "";
+      bookSelect.innerHTML = availableBooks
+        .map((bookName) => {
+          const bookValue = bookName.toLowerCase();
+          const selected =
+            normalizeBookName(bookValue) === normalizeBookName(selectedBook) ? "selected" : "";
 
           return `
-            <option value="${bookName.toLowerCase()}" ${selected}>
+            <option value="${bookValue}" ${selected}>
               ${bookName}
             </option>
           `;
         })
         .join("");
+
+      validateChapterLimit();
     } catch (error) {
       console.error("Error en libros:", error);
     }
   }
 
   function getMaxChapters(book) {
-    return Object.entries(BIBLE_CHAPTERS).find(([key]) => key === book.toLowerCase())?.[1] || 50;
+    return getBookChapterCount(book);
   }
 
   function validateChapterLimit() {
@@ -145,6 +153,10 @@ export function initBibleNavigatorForm() {
   }
 
   bookSelect?.addEventListener("change", validateChapterLimit);
+
+  versionSelect?.addEventListener("change", () => {
+    loadBooks(versionSelect.value);
+  });
 
   chapterInput?.addEventListener("input", validateChapterLimit);
 
