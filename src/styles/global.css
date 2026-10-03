@@ -44,3 +44,50 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.bible-selector-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 0;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+}
+
+.bible-control-label {
+  color: var(--muted-strong);
+  letter-spacing: 0.08em;
+  opacity: 0.9;
+}
+
+.bible-control-field {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--bg-elevated) 82%, transparent);
+  color: var(--text-strong);
+  border: 1px solid var(--border);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.bible-control-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.bible-nav-close-btn {
+  color: var(--muted);
+  border-radius: 9999px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.bible-nav-close-btn:hover {
+  background: var(--card);
+  color: var(--text-strong);
+  transform: scale(1.02);
+}
