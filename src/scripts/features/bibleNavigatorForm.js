@@ -1,7 +1,12 @@
 import { emit, Events } from "../../lib/events.js";
 import { byId } from "../../lib/ui.js";
 import { getBibleBooks, getBibleVersions } from "../../services/bibleApi.js";
-import { getBookChapterCount, normalizeBookName } from "../../utils/bible_chapters.js";
+import {
+  BOOK_FILTER_OPTIONS,
+  filterBooksByCategory,
+  getBookChapterCount,
+  normalizeBookName,
+} from "../../utils/bible_chapters.js";
 
 /**
  * Inicializa el formulario de navegación bíblica.
@@ -18,10 +23,18 @@ export function initBibleNavigatorForm() {
   const currentChapter = container.dataset.chapter || "1";
 
   const versionSelect = byId("version-select");
+  const bookFilterSelect = byId("book-filter-select");
   const bookSelect = byId("book-select");
   const chapterInput = byId("chapter-input");
   const goButton = byId("go-btn");
   const closeButton = byId("close-selector-btn");
+
+  if (bookFilterSelect) {
+    bookFilterSelect.innerHTML = BOOK_FILTER_OPTIONS.map(
+      (filterOption) => `<option value="${filterOption}">${filterOption}</option>`
+    ).join("");
+    bookFilterSelect.value = "Todos";
+  }
 
   console.log("BibleNavigatorForm inicializado");
 
@@ -64,14 +77,21 @@ export function initBibleNavigatorForm() {
         return;
       }
 
+      const selectedCategory = bookFilterSelect?.value || "Todos";
       const availableBooks = books.filter((book) => book != null).map(String);
+      const filteredBooks = filterBooksByCategory(availableBooks, selectedCategory);
+      const bookOptions = filteredBooks.length > 0 ? filteredBooks : availableBooks;
       const preferredBook = bookSelect.value || currentBook;
       const selectedBook =
-        availableBooks.find(
-          (book) => normalizeBookName(book) === normalizeBookName(preferredBook)
-        ) || availableBooks[0];
+        bookOptions.find((book) => normalizeBookName(book) === normalizeBookName(preferredBook)) ||
+        bookOptions[0];
 
-      bookSelect.innerHTML = availableBooks
+      if (!selectedBook) {
+        bookSelect.innerHTML = '<option value="">Sin libros disponibles</option>';
+        return;
+      }
+
+      bookSelect.innerHTML = bookOptions
         .map((bookName) => {
           const bookValue = bookName.toLowerCase();
           const selected =
@@ -153,6 +173,10 @@ export function initBibleNavigatorForm() {
   }
 
   bookSelect?.addEventListener("change", validateChapterLimit);
+
+  bookFilterSelect?.addEventListener("change", () => {
+    loadBooks(versionSelect?.value || currentVersion);
+  });
 
   versionSelect?.addEventListener("change", () => {
     loadBooks(versionSelect.value);

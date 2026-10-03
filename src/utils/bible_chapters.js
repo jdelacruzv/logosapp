@@ -14,6 +14,193 @@ export function getBookChapterCount(book) {
   return BIBLE_CHAPTERS[normalizeBookName(book)] ?? 50;
 }
 
+export const BOOK_FILTER_OPTIONS = [
+  "Todos",
+  "Antiguo Testamento",
+  "Nuevo Testamento",
+  "Evangelios",
+  "Epístolas",
+  "Pentateuco",
+  "Historia",
+  "Libros Proféticos",
+  "Profetas Mayores",
+  "Profetas Menores",
+];
+
+export const BOOK_FILTER_GROUPS = {
+  "Antiguo Testamento": [
+    "genesis",
+    "exodo",
+    "levitico",
+    "numeros",
+    "deuteronomio",
+    "josue",
+    "jueces",
+    "rut",
+    "1 samuel",
+    "2 samuel",
+    "1 reyes",
+    "2 reyes",
+    "1 cronicas",
+    "2 cronicas",
+    "esdras",
+    "nehemias",
+    "ester",
+    "job",
+    "salmos",
+    "proverbios",
+    "eclesiastes",
+    "cantares",
+    "isaias",
+    "jeremias",
+    "lamentaciones",
+    "ezequiel",
+    "daniel",
+    "oseas",
+    "joel",
+    "amos",
+    "abdias",
+    "jonas",
+    "miqueas",
+    "nahum",
+    "habacuc",
+    "sofonias",
+    "hageo",
+    "zacarias",
+    "malaquias",
+  ],
+  "Nuevo Testamento": [
+    "mateo",
+    "marcos",
+    "lucas",
+    "juan",
+    "hechos",
+    "romanos",
+    "1 corintios",
+    "2 corintios",
+    "galatas",
+    "efesios",
+    "filipenses",
+    "colosenses",
+    "1 tesalonicenses",
+    "2 tesalonicenses",
+    "1 timoteo",
+    "2 timoteo",
+    "tito",
+    "filemon",
+    "hebreos",
+    "santiago",
+    "1 pedro",
+    "2 pedro",
+    "1 juan",
+    "2 juan",
+    "3 juan",
+    "judas",
+    "apocalipsis",
+  ],
+  Evangelios: ["mateo", "marcos", "lucas", "juan"],
+  Epístolas: [
+    "romanos",
+    "1 corintios",
+    "2 corintios",
+    "galatas",
+    "efesios",
+    "filipenses",
+    "colosenses",
+    "1 tesalonicenses",
+    "2 tesalonicenses",
+    "1 timoteo",
+    "2 timoteo",
+    "tito",
+    "filemon",
+    "hebreos",
+    "santiago",
+    "1 pedro",
+    "2 pedro",
+    "1 juan",
+    "2 juan",
+    "3 juan",
+    "judas",
+  ],
+  Pentateuco: ["genesis", "exodo", "levitico", "numeros", "deuteronomio"],
+  Historia: [
+    "josue",
+    "jueces",
+    "rut",
+    "1 samuel",
+    "2 samuel",
+    "1 reyes",
+    "2 reyes",
+    "1 cronicas",
+    "2 cronicas",
+    "esdras",
+    "nehemias",
+    "ester",
+    "hechos",
+  ],
+  "Libros Proféticos": [
+    "isaias",
+    "jeremias",
+    "lamentaciones",
+    "ezequiel",
+    "daniel",
+    "oseas",
+    "joel",
+    "amos",
+    "abdias",
+    "jonas",
+    "miqueas",
+    "nahum",
+    "habacuc",
+    "sofonias",
+    "hageo",
+    "zacarias",
+    "malaquias",
+  ],
+  "Profetas Mayores": ["isaias", "jeremias", "ezequiel", "daniel"],
+  "Profetas Menores": [
+    "lamentaciones",
+    "oseas",
+    "joel",
+    "amos",
+    "abdias",
+    "jonas",
+    "miqueas",
+    "nahum",
+    "habacuc",
+    "sofonias",
+    "hageo",
+    "zacarias",
+    "malaquias",
+  ],
+};
+
+export function getBookCategory(book) {
+  const key = normalizeBookName(book);
+
+  const category = BOOK_FILTER_OPTIONS.find(
+    (option) => option !== "Todos" && BOOK_FILTER_GROUPS[option]?.includes(key)
+  );
+
+  return category ?? "Todos";
+}
+
+export function filterBooksByCategory(books, category = "Todos") {
+  const availableBooks = (books ?? []).filter(Boolean).map(String);
+
+  if (!category || category === "Todos") {
+    return availableBooks;
+  }
+
+  const groupBooks = BOOK_FILTER_GROUPS[category] ?? [];
+
+  return availableBooks.filter((book) => {
+    const normalizedBook = normalizeBookName(book);
+
+    return groupBooks.includes(normalizedBook);
+  });
+}
+
 export const BIBLE_CHAPTERS = {
   genesis: 50,
   exodo: 40,
