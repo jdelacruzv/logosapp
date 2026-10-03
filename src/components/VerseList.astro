@@ -6,10 +6,7 @@ const { verses = [], book = "genesis", chapter = 1 } = Astro.props;
 const normalizedVerses = normalizeVerses(verses);
 ---
 
-<article
-  class="bible-text text-xl md:text-2xl font-serif leading-tight md:leading-relaxed space-y-4"
-  style="color: var(--text);"
->
+<article class="bible-text space-y-4" style="color: var(--text);">
   {
     normalizedVerses.map((item) => (
       <div

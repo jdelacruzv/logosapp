@@ -1,3 +1,4 @@
+@import "@fontsource/merriweather/400.css";
 @import "tailwindcss";
 
 :root {
@@ -11,6 +12,8 @@
   --border: rgba(255, 255, 255, 0.08);
   --accent: #60a5fa;
   --card: rgba(255, 255, 255, 0.02);
+  --control-bg: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+  --control-border: rgba(255, 255, 255, 0.12);
   --header-bg: rgba(18, 18, 18, 0.9);
   --header-text: rgba(255, 255, 255, 0.72);
   --header-muted: rgba(255, 255, 255, 0.5);
@@ -28,6 +31,8 @@ html.theme-light {
   --border: rgba(17, 24, 39, 0.12);
   --accent: #3b82f6;
   --card: rgba(15, 23, 42, 0.03);
+  --control-bg: #e5e7eb;
+  --control-border: rgba(17, 24, 39, 0.16);
 }
 
 html {
@@ -43,6 +48,19 @@ body {
   font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.bible-text {
+  font-family: "Merriweather", Georgia, serif;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) {
+  .bible-text {
+    font-size: 1.25rem;
+    line-height: 1.75;
+  }
 }
 
 .bible-selector-container {
@@ -62,9 +80,9 @@ body {
   width: 100%;
   padding: 0.9rem 1rem;
   border-radius: 0.85rem;
-  background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+  background: var(--control-bg);
   color: var(--text-strong);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--control-border);
   outline: none;
   transition:
     border-color 0.2s ease,
